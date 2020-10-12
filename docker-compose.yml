@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./containers/app/Dockerfile
+    volumes:
+      - .:/var/task
+      - node_modules:/var/task/node_modules
+      - yarn_cache:/usr/local/share/.cache/yarn/v6
+
+volumes:
+  node_modules:
+  yarn_cache:
