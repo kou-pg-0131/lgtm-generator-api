@@ -10,6 +10,18 @@ services:
       - node_modules:/var/task/node_modules
       - yarn_cache:/usr/local/share/.cache/yarn/v6
 
+  infra:
+    build:
+      context: .
+      dockerfile: ./containers/infra/Dockerfile
+    volumes:
+      - .:/app
+      - aws:/root/.aws
+    environment:
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+
 volumes:
+  aws:
   node_modules:
   yarn_cache:
