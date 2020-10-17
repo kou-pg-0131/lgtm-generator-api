@@ -1,9 +1,11 @@
 service:
-  name: "lgtn-generator-api"
+  name: "${self:custom.product}"
 
 frameworkVersion: "2"
 
 custom:
+  product: "lgtm-generator-api"
+  prefix: "${self:custom.product}-${self:provider.stage}"
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -20,6 +22,11 @@ provider:
     minimumCompressionSize: 1024
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+
+layers:
+  canvas:
+    name: "${self:custom.prefix}-canvas"
+    path: "layers/canvas"
 
 functions:
   createLgtm:
