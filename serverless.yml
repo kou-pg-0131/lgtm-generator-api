@@ -31,6 +31,8 @@ layers:
 functions:
   createLgtm:
     handler: "src/interfaces/controllers/handlers/lgtms.create"
+    layers:
+      - Ref: "CanvasLambdaLayer"
     events:
       - http:
           method: "post"
