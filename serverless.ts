@@ -2,10 +2,7 @@ import type { Serverless } from 'serverless/aws';
 
 const serverlessConfiguration: Serverless = {
   service: {
-    name: 'lgtn-gen-api',
-    // app and org for use with dashboard.serverless.com
-    // app: your-app-name,
-    // org: your-org-name,
+    name: 'lgtn-generator-api',
   },
   frameworkVersion: '2',
   custom: {
@@ -14,10 +11,11 @@ const serverlessConfiguration: Serverless = {
       includeModules: true
     }
   },
-  // Add the serverless-webpack plugin
   plugins: ['serverless-webpack'],
   provider: {
     name: 'aws',
+    profile: 'default',
+    region: 'us-east-1',
     runtime: 'nodejs12.x',
     apiGateway: {
       minimumCompressionSize: 1024,
@@ -27,13 +25,13 @@ const serverlessConfiguration: Serverless = {
     },
   },
   functions: {
-    hello: {
-      handler: 'handler.hello',
+    createLgtm: {
+      handler: 'src/interfaces/controllers/handlers/lgtms.create',
       events: [
         {
           http: {
-            method: 'get',
-            path: 'hello',
+            method: 'post',
+            path: '/v1/lgtms',
           }
         }
       ]
