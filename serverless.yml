@@ -38,6 +38,8 @@ functions:
   searchImages:
     timeout: 30
     handler: "src/interfaces/controllers/handlers/images.search"
+    layers:
+      - Ref: "CanvasLambdaLayer"
     events:
       - http:
           method: "get"
