@@ -42,9 +42,11 @@ module.exports = {
     ],
   },
   plugins: [
-    // new CopyWebpackPlugin({
-    //   patterns: [],
-    // }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/fonts/Archivo_Black/ArchivoBlack-Regular.ttf', to: 'src/fonts/Archivo_Black/ArchivoBlack-Regular.ttf' },
+      ],
+    }),
     // new ForkTsCheckerWebpackPlugin({
     //   eslint: true,
     //   eslintOptions: {
