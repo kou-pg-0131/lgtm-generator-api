@@ -18,6 +18,10 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
+  variables:
+    s3BucketLogs:
+      dev: "${self:custom.prefix}-lgtms"
+      prod: "${self:custom.product}-lgtms"
 
 plugins:
   - "serverless-webpack"
@@ -35,6 +39,7 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     GOOGLE_API_KEY: "${file(./secrets.yml):googleApiKey}"
     GOOGLE_CUSTOM_SEARCH_ENGINE_ID: "${file(./secrets.yml):googleCustomSearchEngineId}"
+    S3_BUCKET_LGTMS: "${self:custom.variables.s3BucketLogs.${self:provider.stage}}"
 
 layers:
   canvas:
