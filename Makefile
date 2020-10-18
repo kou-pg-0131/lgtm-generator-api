@@ -1,4 +1,4 @@
-.PHONY: yarn
+.PHONY: build-layer yarn
 
 setup_aws_config:
 	docker-compose run --rm infra ./bin/setup_aws_config
@@ -22,7 +22,7 @@ build-layer:
 		/lib64/libpixman-1.so.0 \
 		./layers/canvas/lib/
 
-deploy: yarn
+deploy: build-layer yarn
 	docker-compose run --rm app yarn run deploy --stage dev
 remove:
 	docker-compose run --rm app yarn run remove --stage dev
