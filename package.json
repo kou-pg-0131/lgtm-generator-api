@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "canvas": "^2.6.1",
+    "googleapis": "^61.0.0",
     "source-map-support": "^0.5.10"
   },
   "devDependencies": {
