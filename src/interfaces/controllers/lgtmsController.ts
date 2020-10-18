@@ -2,6 +2,7 @@ import { Lgtm } from '../../domain';
 import { IImageLoader, ILgtmsRepository, ILgtmWriter } from '../gateways';
 
 export interface ILgtmsController {
+  getAll(): Promise<Lgtm[]>;
   create(params: { base64: string; }): Promise<Lgtm>;
 }
 
@@ -20,6 +21,10 @@ export class LgtmsController implements ILgtmsController {
     this.imageLoader = config.imageLoader;
     this.lgtmsRepository = config.lgtmsRepository;
     this.lgtmWriter = config.lgtmWriter;
+  }
+
+  public async getAll(): Promise<Lgtm[]> {
+    return [];
   }
 
   public async create(params: { base64: string; }): Promise<Lgtm> {

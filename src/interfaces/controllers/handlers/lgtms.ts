@@ -7,6 +7,16 @@ type CreateInput = {
   base64: string;
 };
 
+export const getAll: APIGatewayProxyHandlerV2 = async (_event, _context, _callback) => {
+  const controller = new LgtmsControllerFactory().create();
+  const lgtms = await controller.getAll();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(lgtms),
+  };
+};
+
 export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
   const [input, ok]: [CreateInput, boolean] = new JsonParser().parse(event.body);
 

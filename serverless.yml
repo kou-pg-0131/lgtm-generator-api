@@ -56,6 +56,16 @@ functions:
               queryStrings:
                 q: true
 
+  getAllLgtms:
+    timeout: 30
+    handler: "src/interfaces/controllers/handlers/lgtms.getAll"
+    layers:
+      - Ref: "CanvasLambdaLayer"
+    events:
+      - http:
+          method: "get"
+          path: "/v1/lgtms"
+
   createLgtm:
     timeout: 30
     handler: "src/interfaces/controllers/handlers/lgtms.create"
