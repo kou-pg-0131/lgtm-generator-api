@@ -12,12 +12,14 @@
     "aws-sdk": "^2.773.0",
     "canvas": "^2.6.1",
     "googleapis": "^61.0.0",
-    "source-map-support": "^0.5.10"
+    "source-map-support": "^0.5.10",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/node": "^10.12.18",
     "@types/serverless": "^1.72.5",
+    "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^6.2.1",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
     "serverless": "^2.6.0",
