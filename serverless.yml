@@ -19,9 +19,12 @@ custom:
       inMemory: true
       migrate: true
   variables:
-    s3BucketLogs:
-      dev: "${self:custom.prefix}-lgtms"
-      prod: "${self:custom.product}-lgtms"
+    dynamodbTable:
+      lgtms: "${self:custom.prefix}-lgtms"
+    s3Bucket:
+      lgtms:
+        dev: "${self:custom.prefix}-lgtms"
+        prod: "${self:custom.product}-lgtms"
 
 plugins:
   - "serverless-webpack"
@@ -45,14 +48,14 @@ provider:
             - - "arn:aws:dynamodb"
               - Ref: "AWS::Region"
               - Ref: "AWS::AccountId"
-              - "table/*"
+              - "table/${self:custom.prefix}-*"
     - Effect: "Allow"
       Action: "s3:PutObject"
       Resource:
         Fn::Join:
           - ""
           - - "arn:aws:s3:::"
-            - "${self:custom.variables.s3BucketLogs.${self:provider.stage}}"
+            - "${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}"
             - "/*"
   apiGateway:
     minimumCompressionSize: 1024
@@ -60,7 +63,8 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     GOOGLE_API_KEY: "${file(./secrets.yml):googleApiKey}"
     GOOGLE_CUSTOM_SEARCH_ENGINE_ID: "${file(./secrets.yml):googleCustomSearchEngineId}"
-    S3_BUCKET_LGTMS: "${self:custom.variables.s3BucketLogs.${self:provider.stage}}"
+    S3_BUCKET_LGTMS: "${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}"
+    DYNAMODB_TABLE_LGTMS: "${self:custom.variables.dynamodbTable.lgtms}"
 
 layers:
   canvas:
@@ -107,7 +111,7 @@ resources:
     LgtmsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: "lgtms"
+        TableName: "${self:custom.variables.dynamodbTable.lgtms}"
         AttributeDefinitions:
           - AttributeName: "id"
             AttributeType: "S"

@@ -14,13 +14,16 @@ export class LgtmsRepository implements ILgtmsRepository {
     endpoint: (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'http://dynamodb:8000' : undefined,
   });
   private fileStorage: IFileStorage;
+  private tableName: string;
 
   constructor(
     config: {
       fileStorage: IFileStorage;
+      tableName: string;
     }
   ) {
     this.fileStorage = config.fileStorage;
+    this.tableName = config.tableName;
   }
 
   public async getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
@@ -31,7 +34,7 @@ export class LgtmsRepository implements ILgtmsRepository {
       KeyConditionExpression: '#s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: { ':s': 'ok' },
-      TableName: 'lgtms',
+      TableName: this.tableName,
       IndexName: 'index_by_status',
       ScanIndexForward: false,
       Limit: 2,
@@ -51,7 +54,7 @@ export class LgtmsRepository implements ILgtmsRepository {
     };
 
     await this.dynamodbClient.put({
-      TableName: 'lgtms',
+      TableName: this.tableName,
       Item: lgtm,
     }).promise();
 
@@ -62,7 +65,7 @@ export class LgtmsRepository implements ILgtmsRepository {
     });
 
     await this.dynamodbClient.update({
-      TableName: 'lgtms',
+      TableName: this.tableName,
       Key: { id, created_at },
       UpdateExpression: 'set #s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
@@ -74,7 +77,7 @@ export class LgtmsRepository implements ILgtmsRepository {
 
   private async get(id: string): Promise<Lgtm> {
     return (await this.dynamodbClient.query({
-      TableName: 'lgtms',
+      TableName: this.tableName,
       KeyConditionExpression: '#i = :i',
       ExpressionAttributeNames: { '#i': 'id' },
       ExpressionAttributeValues: { ':i': id },

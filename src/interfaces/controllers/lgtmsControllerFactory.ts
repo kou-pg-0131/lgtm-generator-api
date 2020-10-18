@@ -18,6 +18,7 @@ export class LgtmsControllerFactory {
   private createLgtmsRepository(): ILgtmsRepository {
     return new LgtmsRepository({
       fileStorage: new S3FileStorage({ bucket: process.env.S3_BUCKET_LGTMS }),
+      tableName: process.env.DYNAMODB_TABLE_LGTMS,
     });
   }
 
