@@ -13,6 +13,18 @@ services:
       - ./layers/canvas/lib:/opt/lib
       - node_modules:/var/task/node_modules
       - yarn_cache:/usr/local/share/.cache/yarn/v6
+    depends_on:
+      - dynamodb
+
+  dynamodb:
+    build:
+      context: .
+      dockerfile: ./containers/app/Dockerfile
+    command: yarn run sls dynamodb start
+    ports: ['8080:8080']
+    volumes:
+      - .:/var/task
+      - node_modules:/var/task/node_modules
 
   infra:
     build:
