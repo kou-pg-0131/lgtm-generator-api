@@ -3,6 +3,8 @@
 setup_aws_config:
 	docker-compose run --rm infra ./bin/setup_aws_config
 
+start:
+	docker-compose up app
 yarn:
 	docker-compose run --rm app yarn install --check-files
 
