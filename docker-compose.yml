@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./containers/app/Dockerfile
+    command: yarn run sls offline --host 0.0.0.0
+    ports: ['8080:8080']
     volumes:
       - .:/var/task
       - aws:/root/.aws
