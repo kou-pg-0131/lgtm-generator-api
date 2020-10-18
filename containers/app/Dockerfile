@@ -12,3 +12,6 @@ RUN yum -y install \
       cairo-devel \
       pango-devel \
       libjpeg-turbo-devel
+
+# install java for dynamodb-local
+RUN yum -y install java-1.8.0-openjdk.x86_64
