@@ -5,4 +5,12 @@ provider aws {
 
 module main {
   source = "../.."
+
+  stage        = var.stage
+  ip_whitelist = var.ip_whitelist
+}
+
+variable ip_whitelist {
+  type    = list(string)
+  default = []
 }
