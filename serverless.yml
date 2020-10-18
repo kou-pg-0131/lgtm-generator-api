@@ -33,6 +33,16 @@ provider:
   profile: "default"
   region: "us-east-1"
   runtime: "nodejs12.x"
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - "s3:PutObject"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - "${self:custom.variables.s3BucketLogs.${self:provider.stage}}"
+            - "/*"
   apiGateway:
     minimumCompressionSize: 1024
   environment:
