@@ -1,4 +1,5 @@
 export type Lgtm = {
   id: string;
-  created_at: Date;
+  status: string;
+  created_at: string;
 };

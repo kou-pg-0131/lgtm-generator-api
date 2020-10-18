@@ -24,7 +24,7 @@ export class LgtmsController implements ILgtmsController {
   }
 
   public async getAll(): Promise<Lgtm[]> {
-    return [];
+    return await this.lgtmsRepository.getAll();
   }
 
   public async create(params: { base64: string; }): Promise<Lgtm> {
