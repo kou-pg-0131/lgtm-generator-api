@@ -1,6 +1,7 @@
 import * as uuid from 'uuid';
 import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
+import { IFileStorage } from '.';
 
 export interface ILgtmsRepository {
   getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
@@ -12,6 +13,15 @@ export class LgtmsRepository implements ILgtmsRepository {
     region:   (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'localhost' : undefined,
     endpoint: (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'http://dynamodb:8000' : undefined,
   });
+  private fileStorage: IFileStorage;
+
+  constructor(
+    config: {
+      fileStorage: IFileStorage;
+    }
+  ) {
+    this.fileStorage = config.fileStorage;
+  }
 
   public async getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
     const evaluatedKey: Lgtm | undefined = evaluatedId ? await this.get(evaluatedId) : undefined;
@@ -30,7 +40,7 @@ export class LgtmsRepository implements ILgtmsRepository {
     return { lgtms: response.Items as Lgtm[], evaluatedId: response.LastEvaluatedKey?.id };
   }
 
-  public async create(_buf: Buffer): Promise<Lgtm> {
+  public async create(buf: Buffer): Promise<Lgtm> {
     const id = uuid.v4();
     const created_at = new Date().toISOString();
 
@@ -44,6 +54,12 @@ export class LgtmsRepository implements ILgtmsRepository {
       TableName: 'lgtms',
       Item: lgtm,
     }).promise();
+
+    await this.fileStorage.save({
+      path: id,
+      data: buf,
+      contentType: 'image/png',
+    });
 
     await this.dynamodbClient.update({
       TableName: 'lgtms',

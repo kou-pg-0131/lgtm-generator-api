@@ -1,6 +1,6 @@
 import { ILgtmsController, LgtmsController } from '.';
 import { IImageLoader, ILgtmsRepository, ILgtmWriter, LgtmsRepository } from '../gateways';
-import { ImageLoader, LgtmWriter } from '../../infrastructures';
+import { ImageLoader, LgtmWriter, S3FileStorage } from '../../infrastructures';
 
 export class LgtmsControllerFactory {
   public create(): ILgtmsController {
@@ -16,7 +16,9 @@ export class LgtmsControllerFactory {
   }
 
   private createLgtmsRepository(): ILgtmsRepository {
-    return new LgtmsRepository();
+    return new LgtmsRepository({
+      fileStorage: new S3FileStorage({ bucket: process.env.S3_BUCKET_LGTMS }),
+    });
   }
 
   private createLgtmWriter(): ILgtmWriter {
