@@ -1,5 +1,7 @@
 declare namespace NodeJS {
   interface ProcessEnv {
+    readonly IS_OFFLINE: string;
+    readonly IS_LOCAL: string;
     readonly GOOGLE_API_KEY: string;
     readonly GOOGLE_CUSTOM_SEARCH_ENGINE_ID: string;
   }
