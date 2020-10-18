@@ -3,7 +3,7 @@ import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
 
 export interface ILgtmsRepository {
-  getAll(): Promise<Lgtm[]>;
+  getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
   create(buf: Buffer): Promise<Lgtm>;
 }
 
@@ -13,18 +13,21 @@ export class LgtmsRepository implements ILgtmsRepository {
     endpoint: (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'http://dynamodb:8000' : undefined,
   });
 
-  public async getAll(): Promise<Lgtm[]> {
+  public async getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
+    const evaluatedKey: Lgtm | undefined = evaluatedId ? await this.get(evaluatedId) : undefined;
+
     const response = await this.dynamodbClient.query({
+      ExclusiveStartKey: evaluatedKey,
       KeyConditionExpression: '#s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: { ':s': 'ok' },
       TableName: 'lgtms',
       IndexName: 'index_by_status',
       ScanIndexForward: false,
-      Limit: 20,
+      Limit: 2,
     }).promise();
 
-    return response.Items as Lgtm[];
+    return { lgtms: response.Items as Lgtm[], evaluatedId: response.LastEvaluatedKey?.id };
   }
 
   public async create(_buf: Buffer): Promise<Lgtm> {
@@ -51,5 +54,15 @@ export class LgtmsRepository implements ILgtmsRepository {
     }).promise();
 
     return { ...lgtm, status: 'ok' };
+  }
+
+  private async get(id: string): Promise<Lgtm> {
+    return (await this.dynamodbClient.query({
+      TableName: 'lgtms',
+      KeyConditionExpression: '#i = :i',
+      ExpressionAttributeNames: { '#i': 'id' },
+      ExpressionAttributeValues: { ':i': id },
+      Limit: 1,
+    }).promise()).Items[0] as Lgtm;
   }
 }

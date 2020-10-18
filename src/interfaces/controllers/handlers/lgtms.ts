@@ -7,13 +7,13 @@ type CreateInput = {
   base64: string;
 };
 
-export const getAll: APIGatewayProxyHandlerV2 = async (_event, _context, _callback) => {
+export const getAll: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
   const controller = new LgtmsControllerFactory().create();
-  const lgtms = await controller.getAll();
+  const { lgtms, evaluatedId } = await controller.getAll({ evaluatedId: event.queryStringParameters?.evaluated_id });
 
   return {
     statusCode: 200,
-    body: JSON.stringify(lgtms),
+    body: JSON.stringify({ lgtms, evaluated_id: evaluatedId }),
   };
 };
 
