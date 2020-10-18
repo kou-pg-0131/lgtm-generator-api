@@ -17,3 +17,6 @@ jspm_packages
 
 # secrets
 /secrets.yml
+
+# dynamodb-local
+/.dynamodb
