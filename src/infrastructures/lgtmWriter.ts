@@ -7,6 +7,6 @@ export class LgtmWriter implements ILgtmWriter {
     const context = canvas.getContext('2d');
     context.drawImage(image, 0, 0);
 
-    return canvas.toBuffer();
+    return canvas.toBuffer('image/png');
   }
 }
