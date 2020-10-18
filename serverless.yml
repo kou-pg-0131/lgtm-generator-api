@@ -26,6 +26,8 @@ provider:
     minimumCompressionSize: 1024
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    GOOGLE_API_KEY: "${file(./secrets.yml):googleApiKey}"
+    GOOGLE_CUSTOM_SEARCH_ENGINE_ID: "${file(./secrets.yml):googleCustomSearchEngineId}"
 
 layers:
   canvas:
