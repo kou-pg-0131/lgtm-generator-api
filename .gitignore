@@ -10,3 +10,7 @@ jspm_packages
 
 # dotenv
 /.env
+
+# layer
+/layers/canvas/lib/*
+!/layers/canvas/lib/.keep
