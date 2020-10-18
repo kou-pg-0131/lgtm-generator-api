@@ -33,6 +33,18 @@ layers:
     path: "layers/canvas"
 
 functions:
+  searchImages:
+    timeout: 30
+    handler: "src/interfaces/controllers/handlers/images.search"
+    events:
+      - http:
+          method: "get"
+          path: "/v1/images"
+          request:
+            parameters:
+              queryStrings:
+                q: true
+
   createLgtm:
     timeout: 30
     handler: "src/interfaces/controllers/handlers/lgtms.create"
