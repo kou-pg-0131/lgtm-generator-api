@@ -42,9 +42,9 @@ module.exports = {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin({
-      patterns: [],
-    }),
+    // new CopyWebpackPlugin({
+    //   patterns: [],
+    // }),
     // new ForkTsCheckerWebpackPlugin({
     //   eslint: true,
     //   eslintOptions: {
