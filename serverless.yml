@@ -12,10 +12,17 @@ custom:
   serverless-offline:
     httpPort: 8080
     useChildProcesses: true
+  dynamodb:
+    stages: ["dev"]
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
 
 plugins:
   - "serverless-webpack"
   - "serverless-offline"
+  - "serverless-dynamodb-local"
 
 provider:
   name: "aws"
@@ -58,3 +65,23 @@ functions:
       - http:
           method: "post"
           path: "/v1/lgtms"
+
+resources:
+  Resources:
+    LgtmsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "lgtms"
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "created_at"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+          - AttributeName: "created_at"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
