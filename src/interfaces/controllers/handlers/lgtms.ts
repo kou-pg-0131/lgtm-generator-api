@@ -18,7 +18,7 @@ export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
   }
 
   const controller = new LgtmsControllerFactory().create();
-  const base64 = controller.create(input);
+  const base64 = await controller.create(input);
 
   return {
     statusCode: 201,
