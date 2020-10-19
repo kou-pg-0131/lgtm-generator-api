@@ -23,7 +23,7 @@ export class LgtmWriter implements ILgtmWriter {
     context.font = `${headerFontSize}px ${fontFamily}`;
     context.fillText('L G T M', x, y, canvas.width);
 
-    context.font = `${textFontSize}px ${fontFamily}`
+    context.font = `${textFontSize}px ${fontFamily}`;
     context.fillText('L o o k s   G o o d   T o   M e', x, y + headerFontSize / 1.5);
 
     return canvas.toBuffer('image/png');

@@ -24,7 +24,7 @@ export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
     return {
       statusCode: 400,
       body: JSON.stringify({ message: 'Invalid JSON.' }),
-    }
+    };
   }
 
   const controller = new LgtmsControllerFactory().create();

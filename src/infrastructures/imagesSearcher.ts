@@ -7,7 +7,7 @@ export class ImagesSearcher implements IImagesSearcher {
   constructor(
     config: {
       apiKey: string;
-    }
+    },
   ) {
   this.customSearchClient = new google.customsearch_v1.Customsearch({ auth: config.apiKey });
   }

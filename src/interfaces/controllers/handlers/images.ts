@@ -7,7 +7,7 @@ export const search: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
   if (!q) return { statusCode: 400, body: JSON.stringify({ message: 'Query is empty.' }) };
 
   const controller = new ImagesControllerFactory().create();
-  const links = await controller.searchLinks(q)
+  const links = await controller.searchLinks(q);
 
   return {
     statusCode: 200,

@@ -20,7 +20,7 @@ export class LgtmsRepository implements ILgtmsRepository {
     config: {
       fileStorage: IFileStorage;
       tableName: string;
-    }
+    },
   ) {
     this.fileStorage = config.fileStorage;
     this.tableName = config.tableName;
