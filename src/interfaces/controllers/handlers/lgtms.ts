@@ -13,6 +13,9 @@ export const getAll: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
 
   return {
     statusCode: 200,
+    headers: {
+      'access-control-allow-origin': '*',
+    },
     body: JSON.stringify({ lgtms, evaluated_id: evaluatedId }),
   };
 };
