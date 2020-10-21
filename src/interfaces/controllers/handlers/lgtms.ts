@@ -37,6 +37,9 @@ export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
 
   return {
     statusCode: 201,
-    body: JSON.stringify(lgtm),
+    headers: {
+      'access-control-allow-origin': '*',
+    },
+    body: JSON.stringify(lgtmToOutput(lgtm)),
   };
 };
