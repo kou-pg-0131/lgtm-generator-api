@@ -37,7 +37,7 @@ export class LgtmsRepository implements ILgtmsRepository {
       TableName: this.tableName,
       IndexName: 'index_by_status',
       ScanIndexForward: false,
-      Limit: 2,
+      Limit: 20,
     }).promise();
 
     return { lgtms: response.Items as Lgtm[], evaluatedId: response.LastEvaluatedKey?.id };
