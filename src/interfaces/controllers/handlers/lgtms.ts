@@ -40,6 +40,6 @@ export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
     headers: {
       'access-control-allow-origin': '*',
     },
-    body: JSON.stringify(lgtmToOutput(lgtm)),
+    body: JSON.stringify(lgtm),
   };
 };
