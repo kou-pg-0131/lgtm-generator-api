@@ -1,7 +1,8 @@
+import { Image } from '../../domain';
 import { IImagesSearcher } from '../gateways';
 
 export interface IImagesController {
-  searchLinks(q: string): Promise<string[]>;
+  search(q: string): Promise<Image[]>;
 }
 
 export class ImagesController implements IImagesController {
@@ -15,7 +16,7 @@ export class ImagesController implements IImagesController {
     this.imagesSearcher = config.imagesSearcher;
   }
 
-  public async searchLinks(q: string): Promise<string[]> {
-    return await this.imagesSearcher.searchLinks(q);
+  public async search(q: string): Promise<Image[]> {
+    return await this.imagesSearcher.search(q);
   }
 }

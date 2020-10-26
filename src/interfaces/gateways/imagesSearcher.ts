@@ -1,3 +1,5 @@
+import { Image } from '../../domain/image';
+
 export interface IImagesSearcher {
-  searchLinks(q: string): Promise<string[]>;
+  search(q: string): Promise<Image[]>;
 }

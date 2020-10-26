@@ -1,4 +1,5 @@
 import * as google from 'googleapis';
+import { Image } from '../domain';
 import { IImagesSearcher } from '../interfaces/gateways';
 
 export class ImagesSearcher implements IImagesSearcher {
@@ -9,10 +10,10 @@ export class ImagesSearcher implements IImagesSearcher {
       apiKey: string;
     },
   ) {
-  this.customSearchClient = new google.customsearch_v1.Customsearch({ auth: config.apiKey });
+    this.customSearchClient = new google.customsearch_v1.Customsearch({ auth: config.apiKey });
   }
 
-  public async searchLinks(q: string): Promise<string[]> {
+  public async search(q: string): Promise<Image[]> {
     const response = await this.customSearchClient.cse.list({
       q,
       cx: process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
@@ -21,6 +22,9 @@ export class ImagesSearcher implements IImagesSearcher {
       safe: 'active',
     });
 
-    return response.data.items.map(item => item.link);
+    return response.data.items.map(item => ({
+      title: item.title,
+      url: item.link,
+    }));
   }
 }
