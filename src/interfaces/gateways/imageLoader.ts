@@ -1,5 +1,5 @@
 import { Image } from 'canvas';
 
 export interface IImageLoader {
-  load(buf: Buffer): Promise<Image>;
+  load(bufOrUrl: Buffer | string): Promise<Image>;
 }

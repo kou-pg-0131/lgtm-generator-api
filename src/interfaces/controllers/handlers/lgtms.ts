@@ -4,7 +4,8 @@ import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import 'source-map-support/register';
 
 type CreateInput = {
-  base64: string;
+  base64?: string;
+  url?: string;
 };
 
 export const getAll: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
@@ -23,7 +24,7 @@ export const getAll: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
 export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
   const [input, ok]: [CreateInput, boolean] = new JsonParser().parse(event.body);
 
-  if (!ok) {
+  if (!ok || (!input.base64 && !input.url)) {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: 'Invalid JSON.' }),
@@ -31,9 +32,7 @@ export const create: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
   }
 
   const controller = new LgtmsControllerFactory().create();
-  const lgtm = await controller.create({
-    base64: input.base64,
-  });
+  const lgtm = await controller.create(input);
 
   return {
     statusCode: 201,
