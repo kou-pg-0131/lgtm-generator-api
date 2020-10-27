@@ -11,6 +11,9 @@ export const search: APIGatewayProxyHandlerV2 = async (event, _context, _callbac
 
   return {
     statusCode: 200,
+    headers: {
+      'access-control-allow-origin': '*',
+    },
     body: JSON.stringify(images),
   };
 };
