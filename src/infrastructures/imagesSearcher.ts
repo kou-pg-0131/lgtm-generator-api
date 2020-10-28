@@ -29,10 +29,9 @@ export class ImagesSearcher implements IImagesSearcher {
         num: 10,
         searchType: 'image',
         safe: 'active',
-        fileType: 'png,jpg',
+        fileType: 'jpeg',
       },
     );
-    console.log(endpoint);
     const response = await this.httpClient.get(endpoint);
 
     return response.data.items.map(item => ({
