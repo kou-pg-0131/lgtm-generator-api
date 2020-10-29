@@ -1,13 +1,10 @@
 import * as uuid from 'uuid';
-import { DynamoDB } from 'aws-sdk';
 import { Report, ReportType } from '../../domain';
 import { IReportsRepository } from '../../usecases';
+import { DynamoDBDocumentClientFactory } from '.';
 
 export class ReportsRepository implements IReportsRepository {
-  private dynamodbClient = new DynamoDB.DocumentClient({
-    region:   (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'localhost' : undefined,
-    endpoint: (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'http://dynamodb:8000' : undefined,
-  });
+  private dynamodbDocumentClient = new DynamoDBDocumentClientFactory().create();
   private tableName: string;
 
   constructor(config: { tableName: string; }) {
@@ -21,7 +18,7 @@ export class ReportsRepository implements IReportsRepository {
       created_at: new Date().toISOString(),
     };
 
-    await this.dynamodbClient.put({
+    await this.dynamodbDocumentClient.put({
       TableName: this.tableName,
       Item: report,
     }).promise();

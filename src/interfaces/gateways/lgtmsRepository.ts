@@ -1,14 +1,10 @@
 import * as uuid from 'uuid';
-import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
 import { ILgtmsRepository } from '../../usecases';
-import { IFileStorage, IImageLoader, ILgtmWriter } from '.';
+import { DynamoDBDocumentClientFactory, IFileStorage, IImageLoader, ILgtmWriter } from '.';
 
 export class LgtmsRepository implements ILgtmsRepository {
-  private dynamodbClient = new DynamoDB.DocumentClient({
-    region:   (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'localhost' : undefined,
-    endpoint: (process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true') ? 'http://dynamodb:8000' : undefined,
-  });
+  private dynamodbDocumentClient = new DynamoDBDocumentClientFactory().create();
   private fileStorage: IFileStorage;
   private tableName: string;
   private imageLoader: IImageLoader;
@@ -31,7 +27,7 @@ export class LgtmsRepository implements ILgtmsRepository {
   public async getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
     const evaluatedKey: Lgtm | undefined = evaluatedId ? await this.get(evaluatedId) : undefined;
 
-    const response = await this.dynamodbClient.query({
+    const response = await this.dynamodbDocumentClient.query({
       ExclusiveStartKey: evaluatedKey,
       KeyConditionExpression: '#s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
@@ -66,7 +62,7 @@ export class LgtmsRepository implements ILgtmsRepository {
       created_at,
     };
 
-    await this.dynamodbClient.put({
+    await this.dynamodbDocumentClient.put({
       TableName: this.tableName,
       Item: lgtm,
     }).promise();
@@ -77,7 +73,7 @@ export class LgtmsRepository implements ILgtmsRepository {
       contentType: 'image/png',
     });
 
-    await this.dynamodbClient.update({
+    await this.dynamodbDocumentClient.update({
       TableName: this.tableName,
       Key: { id, created_at },
       UpdateExpression: 'set #s = :s',
@@ -89,7 +85,7 @@ export class LgtmsRepository implements ILgtmsRepository {
   }
 
   private async get(id: string): Promise<Lgtm> {
-    return (await this.dynamodbClient.query({
+    return (await this.dynamodbDocumentClient.query({
       TableName: this.tableName,
       KeyConditionExpression: '#i = :i',
       ExpressionAttributeNames: { '#i': 'id' },
