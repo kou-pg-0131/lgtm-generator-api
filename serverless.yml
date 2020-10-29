@@ -22,6 +22,7 @@ custom:
   variables:
     dynamodbTable:
       lgtms: "${self:custom.prefix}-lgtms"
+      reports: "${self:custom.prefix}-reports"
     s3Bucket:
       lgtms:
         dev: "${self:custom.prefix}-lgtms"
@@ -110,6 +111,27 @@ functions:
 
 resources:
   Resources:
+    ReportsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "${self:custom.variables.dynamodbTable.reports}"
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "created_at"
+            AttributeType: "S"
+          - AttributeName: "type"
+            AttributeType: "S"
+          - AttributeName: "text"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+          - AttributeName: "created_at"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     LgtmsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
