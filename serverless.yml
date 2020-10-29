@@ -67,6 +67,7 @@ provider:
     GOOGLE_CUSTOM_SEARCH_ENGINE_ID: "${file(./secrets.yml):googleCustomSearchEngineId}"
     S3_BUCKET_LGTMS: "${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}"
     DYNAMODB_TABLE_LGTMS: "${self:custom.variables.dynamodbTable.lgtms}"
+    DYNAMODB_TABLE_REPORTS: "${self:custom.variables.dynamodbTable.reports}"
 
 layers:
   canvas:
@@ -129,10 +130,6 @@ resources:
           - AttributeName: "id"
             AttributeType: "S"
           - AttributeName: "created_at"
-            AttributeType: "S"
-          - AttributeName: "type"
-            AttributeType: "S"
-          - AttributeName: "text"
             AttributeType: "S"
         KeySchema:
           - AttributeName: "id"

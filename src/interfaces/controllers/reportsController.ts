@@ -1,4 +1,5 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import { IReportsUsecase } from '../../usecases';
 import { ReportsControllerFactory } from '.';
 import 'source-map-support/register';
 
@@ -7,13 +8,23 @@ export interface IReportsController {
 }
 
 export class ReportsController implements IReportsController {
-  public async create(_event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  private reportsUsecase: IReportsUsecase;
+
+  constructor(config: { reportsUsecase: IReportsUsecase; }) {
+    this.reportsUsecase = config.reportsUsecase;
+  }
+
+  public async create(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+    // FIXME: use JsonParser
+    const input = JSON.parse(event.body);
+    const report = await this.reportsUsecase.create(input);
+
     return {
       statusCode: 201,
       headers: {
         'access-control-allow-origin': '*',
       },
-      body: JSON.stringify({ message: 'hello' }),
+      body: JSON.stringify(report),
     };
   }
 }
