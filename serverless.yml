@@ -74,6 +74,16 @@ layers:
     path: "layers/canvas"
 
 functions:
+  createReport:
+    timeout: 30
+    handler: "src/interfaces/controllers/reportsController.createReport"
+    layers:
+      - Ref: "CanvasLambdaLayer"
+    events:
+      - http:
+          method: "post"
+          path: "/v1/reports"
+
   searchImages:
     timeout: 30
     handler: "src/interfaces/controllers/handlers/images.search"
