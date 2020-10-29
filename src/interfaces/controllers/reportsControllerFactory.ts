@@ -1,11 +1,13 @@
 import { ReportsController, IReportsController } from '.';
 import { IReportsUsecase, ReportsUsecase, IReportsRepository } from '../../usecases';
 import { ReportsRepository } from '../gateways';
+import { Renderer } from '../../infrastructures';
 
 export class ReportsControllerFactory {
   public create(): IReportsController {
     return new ReportsController({
       reportsUsecase: this.createReportsUsecase(),
+      renderer: new Renderer(),
     });
   }
 

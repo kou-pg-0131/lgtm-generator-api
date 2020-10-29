@@ -1,12 +1,13 @@
 import { ILgtmsController, LgtmsController } from '.';
 import { ILgtmsRepository, ILgtmsUsecase, LgtmsUsecase } from '../../usecases';
 import { LgtmsRepository } from '../gateways';
-import { ImageLoader, LgtmWriter, S3FileStorage } from '../../infrastructures';
+import { ImageLoader, LgtmWriter, S3FileStorage, Renderer } from '../../infrastructures';
 
 export class LgtmsControllerFactory {
   public create(): ILgtmsController {
     return new LgtmsController({
       lgtmsUsecase: this.createLgtmsUsecase(),
+      renderer: new Renderer(),
     });
   }
 

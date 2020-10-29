@@ -1,12 +1,13 @@
 import { IImagesController, ImagesController } from '.';
 import { IImagesUsecase, ImagesUsecase, IImagesRepository } from '../../usecases';
 import { ImagesRepository } from '../gateways';
-import { ImagesSearcher, HttpClient, UrlBuilder } from '../../infrastructures';
+import { ImagesSearcher, HttpClient, Renderer, UrlBuilder } from '../../infrastructures';
 
 export class ImagesControllerFactory {
   public create(): IImagesController {
     return new ImagesController({
       imagesUsecase: this.createImagesUsecase(),
+      renderer: new Renderer(),
     });
   }
 

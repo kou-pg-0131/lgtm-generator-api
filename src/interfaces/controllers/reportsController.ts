@@ -1,31 +1,26 @@
-import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2 } from 'aws-lambda';
 import { IReportsUsecase } from '../../usecases';
-import { ReportsControllerFactory } from '.';
+import { ReportsControllerFactory, IRenderer, IResponse } from '.';
 import 'source-map-support/register';
 
 export interface IReportsController {
-  create(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2>;
+  create(event: APIGatewayProxyEventV2): Promise<IResponse>;
 }
 
 export class ReportsController implements IReportsController {
+  private renderer: IRenderer;
   private reportsUsecase: IReportsUsecase;
 
-  constructor(config: { reportsUsecase: IReportsUsecase; }) {
+  constructor(config: { reportsUsecase: IReportsUsecase; renderer: IRenderer; }) {
     this.reportsUsecase = config.reportsUsecase;
+    this.renderer = config.renderer;
   }
 
-  public async create(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  public async create(event: APIGatewayProxyEventV2): Promise<IResponse> {
     // FIXME: use JsonParser
     const input = JSON.parse(event.body);
     const report = await this.reportsUsecase.create(input);
-
-    return {
-      statusCode: 201,
-      headers: {
-        'access-control-allow-origin': '*',
-      },
-      body: JSON.stringify(report),
-    };
+    return this.renderer.created({ body: JSON.stringify(report), contentType: 'application/json' });
   }
 }
 

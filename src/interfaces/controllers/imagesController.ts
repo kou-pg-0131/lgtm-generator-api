@@ -1,32 +1,27 @@
-import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2 } from 'aws-lambda';
 import 'source-map-support/register';
 import { IImagesUsecase } from '../../usecases';
-import { ImagesControllerFactory } from '.';
+import { ImagesControllerFactory, IRenderer, IResponse } from '.';
 
 export interface IImagesController {
-  search(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2>;
+  search(event: APIGatewayProxyEventV2): Promise<IResponse>;
 }
 
 export class ImagesController implements IImagesController {
+  private renderer: IRenderer;
   private imagesUsecase: IImagesUsecase;
 
-  constructor(config: { imagesUsecase: IImagesUsecase; }) {
+  constructor(config: { imagesUsecase: IImagesUsecase; renderer: IRenderer; }) {
     this.imagesUsecase = config.imagesUsecase;
+    this.renderer = config.renderer;
   }
 
-  public async search(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  public async search(event: APIGatewayProxyEventV2): Promise<IResponse> {
     const q = event.queryStringParameters?.q;
-    if (!q) return { statusCode: 400, body: JSON.stringify({ message: 'Query is empty.' }) };
+    if (!q) return this.renderer.badRequest();
 
     const images = await this.imagesUsecase.search({ q });
-
-    return {
-      statusCode: 200,
-      headers: {
-        'access-control-allow-origin': '*',
-      },
-      body: JSON.stringify(images),
-    };
+    return this.renderer.ok({ body: JSON.stringify(images), contentType: 'application/json' });
   }
 }
 
