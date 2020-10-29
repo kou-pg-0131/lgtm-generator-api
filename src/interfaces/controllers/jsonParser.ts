@@ -1,5 +1,5 @@
 export class JsonParser {
-  public parse<T>(str: string): T | undefined {
+  public parse<T>(str: string): T | null | undefined {
     try {
       return JSON.parse(str);
     } catch {
