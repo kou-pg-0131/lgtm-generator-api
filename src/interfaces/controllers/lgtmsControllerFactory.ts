@@ -1,28 +1,27 @@
 import { ILgtmsController, LgtmsController } from '.';
-import { IImageLoader, ILgtmsRepository, ILgtmWriter, LgtmsRepository } from '../gateways';
+import { ILgtmsRepository, ILgtmsUsecase, LgtmsUsecase } from '../../usecases';
+import { LgtmsRepository } from '../gateways';
 import { ImageLoader, LgtmWriter, S3FileStorage } from '../../infrastructures';
 
 export class LgtmsControllerFactory {
   public create(): ILgtmsController {
     return new LgtmsController({
-      imageLoader: this.createImageLoader(),
-      lgtmsRepository: this.createLgtmsRepository(),
-      lgtmWriter: this.createLgtmWriter(),
+      lgtmsUsecase: this.createLgtmsUsecase(),
     });
   }
 
-  private createImageLoader(): IImageLoader {
-    return new ImageLoader();
+  private createLgtmsUsecase(): ILgtmsUsecase {
+    return new LgtmsUsecase({
+      lgtmsRepository: this.createLgtmsRepository(),
+    });
   }
 
   private createLgtmsRepository(): ILgtmsRepository {
     return new LgtmsRepository({
       fileStorage: new S3FileStorage({ bucket: process.env.S3_BUCKET_LGTMS }),
       tableName: process.env.DYNAMODB_TABLE_LGTMS,
+      imageLoader: new ImageLoader(),
+      lgtmWriter: new LgtmWriter(),
     });
-  }
-
-  private createLgtmWriter(): ILgtmWriter {
-    return new LgtmWriter();
   }
 }

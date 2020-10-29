@@ -1,12 +1,8 @@
 import * as uuid from 'uuid';
 import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
-import { IFileStorage } from '.';
-
-export interface ILgtmsRepository {
-  getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
-  create(buf: Buffer): Promise<Lgtm>;
-}
+import { ILgtmsRepository } from '../../usecases';
+import { IFileStorage, IImageLoader, ILgtmWriter } from '.';
 
 export class LgtmsRepository implements ILgtmsRepository {
   private dynamodbClient = new DynamoDB.DocumentClient({
@@ -15,15 +11,21 @@ export class LgtmsRepository implements ILgtmsRepository {
   });
   private fileStorage: IFileStorage;
   private tableName: string;
+  private imageLoader: IImageLoader;
+  private lgtmWriter: ILgtmWriter;
 
   constructor(
     config: {
       fileStorage: IFileStorage;
       tableName: string;
+      imageLoader: IImageLoader;
+      lgtmWriter: ILgtmWriter;
     },
   ) {
     this.fileStorage = config.fileStorage;
     this.tableName = config.tableName;
+    this.imageLoader = config.imageLoader;
+    this.lgtmWriter = config.lgtmWriter;
   }
 
   public async getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
@@ -43,7 +45,18 @@ export class LgtmsRepository implements ILgtmsRepository {
     return { lgtms: response.Items as Lgtm[], evaluatedId: response.LastEvaluatedKey?.id };
   }
 
-  public async create(buf: Buffer): Promise<Lgtm> {
+  public async create(params: { base64?: string; url?: string; }): Promise<Lgtm> {
+    const bufOrUrl = (() => {
+      if (params.base64) {
+        return Buffer.from(params.base64, 'base64');
+      } else if (params.url) {
+        return params.url;
+      } else {
+        throw new Error('Bad Request'); // FIXME: custom error
+      }
+    })();
+    const image = await this.imageLoader.load(bufOrUrl);
+    const buf = await this.lgtmWriter.write(image);
     const id = uuid.v4();
     const created_at = new Date().toISOString();
 

@@ -19,12 +19,12 @@ export class ImagesSearcher implements IImagesSearcher {
     this.urlBuilder = config.urlBuilder;
   }
 
-  public async search(q: string): Promise<Image[]> {
+  public async search(params: { q: string; }): Promise<Image[]> {
     const endpoint = this.urlBuilder.build(
       'https://customsearch.googleapis.com/customsearch/v1',
       {
         key: this.apiKey,
-        q,
+        q: params.q,
         cx: process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
         num: 10,
         searchType: 'image',

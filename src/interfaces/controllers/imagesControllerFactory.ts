@@ -1,19 +1,28 @@
 import { IImagesController, ImagesController } from '.';
-import { IImagesSearcher } from '../gateways';
+import { IImagesUsecase, ImagesUsecase, IImagesRepository } from '../../usecases';
+import { ImagesRepository } from '../gateways';
 import { ImagesSearcher, HttpClient, UrlBuilder } from '../../infrastructures';
 
 export class ImagesControllerFactory {
   public create(): IImagesController {
     return new ImagesController({
-      imagesSearcher: this.createImagesSearcher(),
+      imagesUsecase: this.createImagesUsecase(),
     });
   }
 
-  private createImagesSearcher(): IImagesSearcher {
-    return new ImagesSearcher({
-      apiKey: process.env.GOOGLE_API_KEY,
-      httpClient: new HttpClient(),
-      urlBuilder: new UrlBuilder(),
+  private createImagesUsecase(): IImagesUsecase {
+    return new ImagesUsecase({
+      imagesRepository: this.createImagesRepository(),
+    });
+  }
+
+  private createImagesRepository(): IImagesRepository {
+    return new ImagesRepository({
+      imagesSearcher:  new ImagesSearcher({
+        apiKey: process.env.GOOGLE_API_KEY,
+        httpClient: new HttpClient(),
+        urlBuilder: new UrlBuilder(),
+      }),
     });
   }
 }

@@ -1,47 +1,51 @@
-import { Lgtm } from '../../domain';
-import { IImageLoader, ILgtmsRepository, ILgtmWriter } from '../gateways';
+import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import { ILgtmsUsecase } from '../../usecases';
+import { LgtmsControllerFactory } from '.';
+import 'source-map-support/register';
 
 export interface ILgtmsController {
-  getAll(params: { evaluatedId?: string; }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
-  create(params: { base64?: string; url?: string; }): Promise<Lgtm>;
+  getAll(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2>;
+  create(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2>;
 }
 
 export class LgtmsController implements ILgtmsController {
-  private imageLoader: IImageLoader;
-  private lgtmsRepository: ILgtmsRepository;
-  private lgtmWriter: ILgtmWriter;
+  private lgtmsUsecase: ILgtmsUsecase;
 
-  constructor(
-    config: {
-      imageLoader: IImageLoader;
-      lgtmsRepository: ILgtmsRepository;
-      lgtmWriter: ILgtmWriter;
-    },
-  ) {
-    this.imageLoader = config.imageLoader;
-    this.lgtmsRepository = config.lgtmsRepository;
-    this.lgtmWriter = config.lgtmWriter;
+  constructor(config: { lgtmsUsecase: ILgtmsUsecase; }) {
+    this.lgtmsUsecase = config.lgtmsUsecase;
   }
 
-  public async getAll(params: { evaluatedId?: string; }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
-    return await this.lgtmsRepository.getAll(params.evaluatedId);
+  public async getAll(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+    const { lgtms, evaluatedId } = await this.lgtmsUsecase.getAll({ evaluatedId: event.queryStringParameters?.evaluated_id });
+
+    return {
+      statusCode: 200,
+      headers: {
+        'access-control-allow-origin': '*',
+      },
+      body: JSON.stringify({ lgtms, evaluated_id: evaluatedId }),
+    };
   }
 
-  public async create(params: { base64?: string; url?: string; }): Promise<Lgtm> {
-    const bufOrUrl = (() => {
-      if (params.base64) {
-        return Buffer.from(params.base64, 'base64');
-      } else if (params.url) {
-        return params.url;
-      } else {
-        throw new Error('Bad Request');
-      }
-    })();
-    const image = await this.imageLoader.load(bufOrUrl);
-    const lgtmImageBuf = await this.lgtmWriter.write(image);
+  public async create(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+    // FIXME: use jsonparser
+    const input = JSON.parse(event.body);
+    const lgtm = await this.lgtmsUsecase.create(input);
 
-    const lgtm = await this.lgtmsRepository.create(lgtmImageBuf);
-
-    return lgtm;
+    return {
+      statusCode: 201,
+      headers: {
+        'access-control-allow-origin': '*',
+      },
+      body: JSON.stringify(lgtm),
+    };
   }
 }
+
+export const getAllLgtms: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
+  return new LgtmsControllerFactory().create().getAll(event);
+};
+
+export const createLgtm: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
+  return new LgtmsControllerFactory().create().create(event);
+};
