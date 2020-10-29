@@ -1,4 +1,4 @@
-import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2 } from 'aws-lambda';
+import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { ILgtmsUsecase } from '../../usecases';
 import { LgtmsControllerFactory, IRenderer, IResponse } from '.';
 import 'source-map-support/register';
@@ -31,9 +31,9 @@ export class LgtmsController implements ILgtmsController {
 }
 
 export const getAllLgtms: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
-  return new LgtmsControllerFactory().create().getAll(event);
+  return new LgtmsControllerFactory().create().getAll(event) as APIGatewayProxyResultV2;
 };
 
 export const createLgtm: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
-  return new LgtmsControllerFactory().create().create(event);
+  return new LgtmsControllerFactory().create().create(event) as APIGatewayProxyResultV2;
 };

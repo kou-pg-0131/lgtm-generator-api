@@ -1,4 +1,4 @@
-import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2 } from 'aws-lambda';
+import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import 'source-map-support/register';
 import { IImagesUsecase } from '../../usecases';
 import { ImagesControllerFactory, IRenderer, IResponse } from '.';
@@ -26,5 +26,5 @@ export class ImagesController implements IImagesController {
 }
 
 export const searchImages: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
-  return new ImagesControllerFactory().create().search(event);
+  return new ImagesControllerFactory().create().search(event) as APIGatewayProxyResultV2;
 };

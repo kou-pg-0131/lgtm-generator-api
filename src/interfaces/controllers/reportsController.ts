@@ -1,4 +1,4 @@
-import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2 } from 'aws-lambda';
+import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { IReportsUsecase } from '../../usecases';
 import { ReportsControllerFactory, IRenderer, IResponse } from '.';
 import 'source-map-support/register';
@@ -25,5 +25,5 @@ export class ReportsController implements IReportsController {
 }
 
 export const createReport: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
-  return new ReportsControllerFactory().create().create(event);
+  return new ReportsControllerFactory().create().create(event) as APIGatewayProxyResultV2;
 };
