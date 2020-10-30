@@ -1,6 +1,7 @@
 import * as uuid from 'uuid';
+import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
-import { DynamoDBDocumentClientFactory, IFileStorage, IImageLoader, ILgtmWriter } from '.';
+import { IFileStorage, IImageLoader, ILgtmWriter } from '.';
 
 export interface ILgtmsRepository {
   getAll(params: { evaluatedId?: string }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
@@ -8,35 +9,25 @@ export interface ILgtmsRepository {
 }
 
 export class LgtmsRepository implements ILgtmsRepository {
-  private dynamodbDocumentClient = new DynamoDBDocumentClientFactory().create();
-  private fileStorage: IFileStorage;
-  private tableName: string;
-  private imageLoader: IImageLoader;
-  private lgtmWriter: ILgtmWriter;
-
   constructor(
-    config: {
+    private config: {
       fileStorage: IFileStorage;
       tableName: string;
       imageLoader: IImageLoader;
       lgtmWriter: ILgtmWriter;
+      dynamodbDocumentClient: DynamoDB.DocumentClient;
     },
-  ) {
-    this.fileStorage = config.fileStorage;
-    this.tableName = config.tableName;
-    this.imageLoader = config.imageLoader;
-    this.lgtmWriter = config.lgtmWriter;
-  }
+  ) {}
 
   public async getAll(params: { evaluatedId?: string; }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
     const evaluatedKey: Lgtm | undefined = params.evaluatedId ? await this.get(params.evaluatedId) : undefined;
 
-    const response = await this.dynamodbDocumentClient.query({
+    const response = await this.config.dynamodbDocumentClient.query({
       ExclusiveStartKey: evaluatedKey,
       KeyConditionExpression: '#s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: { ':s': 'ok' },
-      TableName: this.tableName,
+      TableName: this.config.tableName,
       IndexName: 'index_by_status',
       ScanIndexForward: false,
       Limit: 20,
@@ -46,14 +37,14 @@ export class LgtmsRepository implements ILgtmsRepository {
   }
 
   public async create(params: { imageSrc: string | Buffer; }): Promise<Lgtm> {
-    const image = await this.imageLoader.load(params.imageSrc);
-    const lgtmBuf = await this.lgtmWriter.write(image);
+    const image = await this.config.imageLoader.load(params.imageSrc);
+    const lgtmBuf = await this.config.lgtmWriter.write(image);
     const lgtm: Lgtm = { id: uuid.v4(), status: 'pending', created_at: new Date().toISOString() };
 
-    await this.dynamodbDocumentClient.put({ TableName: this.tableName, Item: lgtm }).promise();
-    await this.fileStorage.save({ path: lgtm.id, data: lgtmBuf, contentType: 'image/png' });
-    await this.dynamodbDocumentClient.update({
-      TableName: this.tableName,
+    await this.config.dynamodbDocumentClient.put({ TableName: this.config.tableName, Item: lgtm }).promise();
+    await this.config.fileStorage.save({ path: lgtm.id, data: lgtmBuf, contentType: 'image/png' });
+    await this.config.dynamodbDocumentClient.update({
+      TableName: this.config.tableName,
       Key: { id: lgtm.id, created_at: lgtm.created_at },
       UpdateExpression: 'set #s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
@@ -63,9 +54,9 @@ export class LgtmsRepository implements ILgtmsRepository {
     return { ...lgtm, status: 'ok' };
   }
 
-  private async get(id: string): Promise<Lgtm> {
-    return (await this.dynamodbDocumentClient.query({
-      TableName: this.tableName,
+  private async get(id: string): Promise<Lgtm | undefined> {
+    return (await this.config.dynamodbDocumentClient.query({
+      TableName: this.config.tableName,
       KeyConditionExpression: '#i = :i',
       ExpressionAttributeNames: { '#i': 'id' },
       ExpressionAttributeValues: { ':i': id },

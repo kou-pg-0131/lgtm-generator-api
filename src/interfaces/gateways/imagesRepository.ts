@@ -6,13 +6,9 @@ export interface IImagesRepository {
 }
 
 export class ImagesRepository implements IImagesRepository {
-  private imagesSearcher: IImagesSearcher;
-
-  constructor(config: { imagesSearcher: IImagesSearcher; }) {
-    this.imagesSearcher = config.imagesSearcher;
-  }
+  constructor(private config: { imagesSearcher: IImagesSearcher; }) {}
 
   public async search(params: { q: string; }): Promise<Image[]> {
-    return this.imagesSearcher.search(params);
+    return this.config.imagesSearcher.search(params);
   }
 }

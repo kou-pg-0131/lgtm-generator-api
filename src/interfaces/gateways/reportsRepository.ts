@@ -1,18 +1,13 @@
 import * as uuid from 'uuid';
+import { DynamoDB } from 'aws-sdk';
 import { Report, ReportType } from '../../domain';
-import { DynamoDBDocumentClientFactory } from '.';
 
 export interface IReportsRepository {
   create(params: { lgtmId: string; type: ReportType; text: string; }): Promise<Report>;
 }
 
 export class ReportsRepository implements IReportsRepository {
-  private dynamodbDocumentClient = new DynamoDBDocumentClientFactory().create();
-  private tableName: string;
-
-  constructor(config: { tableName: string; }) {
-    this.tableName = config.tableName;
-  }
+  constructor(private config: { tableName: string; dynamodbDocumentClient: DynamoDB.DocumentClient }) {}
 
   public async create(params: { lgtmId: string; type: ReportType; text: string; }): Promise<Report> {
     const report: Report = {
@@ -23,8 +18,8 @@ export class ReportsRepository implements IReportsRepository {
       created_at: new Date().toISOString(),
     };
 
-    await this.dynamodbDocumentClient.put({
-      TableName: this.tableName,
+    await this.config.dynamodbDocumentClient.put({
+      TableName: this.config.tableName,
       Item: report,
     }).promise();
 

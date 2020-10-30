@@ -14,6 +14,7 @@ export class ImagesControllerFactory {
     return new ImagesRepository({
       imagesSearcher:  new ImagesSearcher({
         apiKey: process.env.GOOGLE_API_KEY,
+        searchEngineId: process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
         httpClient: new HttpClient(),
         urlBuilder: new UrlBuilder(),
       }),

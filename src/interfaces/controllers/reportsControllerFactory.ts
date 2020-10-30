@@ -1,5 +1,5 @@
 import { ReportsController, IReportsController } from '.';
-import { ReportsRepository, IReportsRepository } from '../gateways';
+import { DynamoDBDocumentClientFactory, ReportsRepository, IReportsRepository } from '../gateways';
 import { Renderer } from '../../infrastructures';
 
 export class ReportsControllerFactory {
@@ -12,6 +12,7 @@ export class ReportsControllerFactory {
 
   private createReportsRepository(): IReportsRepository {
     return new ReportsRepository({
+      dynamodbDocumentClient: new DynamoDBDocumentClientFactory().create(),
       tableName: process.env.DYNAMODB_TABLE_REPORTS,
     });
   }

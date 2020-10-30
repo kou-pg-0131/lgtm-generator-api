@@ -1,6 +1,5 @@
 export * from './imagesController';
 export * from './imagesControllerFactory';
-export * from './jsonParser';
 export * from './lgtmsController';
 export * from './lgtmsControllerFactory';
 export * from './renderer';

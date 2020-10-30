@@ -3,36 +3,29 @@ import { IImagesSearcher } from '../interfaces/gateways';
 import { IHttpClient, IUrlBuilder } from '.';
 
 export class ImagesSearcher implements IImagesSearcher {
-  private apiKey: string;
-  private httpClient: IHttpClient;
-  private urlBuilder: IUrlBuilder;
-
   constructor(
-    config: {
+    private config: {
       apiKey: string;
-      urlBuilder: IUrlBuilder,
-      httpClient: IHttpClient,
+      searchEngineId: string;
+      urlBuilder: IUrlBuilder;
+      httpClient: IHttpClient;
     },
-  ) {
-    this.apiKey = config.apiKey;
-    this.httpClient = config.httpClient;
-    this.urlBuilder = config.urlBuilder;
-  }
+  ) {}
 
   public async search(params: { q: string; }): Promise<Image[]> {
-    const endpoint = this.urlBuilder.build(
+    const endpoint = this.config.urlBuilder.build(
       'https://customsearch.googleapis.com/customsearch/v1',
       {
-        key: this.apiKey,
+        key: this.config.apiKey,
         q: params.q,
-        cx: process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
+        cx: this.config.searchEngineId,
         num: 10,
         searchType: 'image',
         safe: 'active',
         fileType: 'jpeg',
       },
     );
-    const response = await this.httpClient.get(endpoint);
+    const response = await this.config.httpClient.get(endpoint);
 
     return response.data.items.map(item => ({
       title: item.title,
