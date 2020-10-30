@@ -8,20 +8,14 @@ export interface IImagesController {
 }
 
 export class ImagesController implements IImagesController {
-  private renderer: IRenderer;
-  private imagesRepository: IImagesRepository;
-
-  constructor(config: { imagesRepository: IImagesRepository; renderer: IRenderer; }) {
-    this.imagesRepository = config.imagesRepository;
-    this.renderer = config.renderer;
-  }
+  constructor(private config: { imagesRepository: IImagesRepository; renderer: IRenderer; }) {}
 
   public async search(event: APIGatewayProxyEventV2): Promise<IResponse> {
     const q = event.queryStringParameters?.q;
-    if (!q) return this.renderer.badRequest();
+    if (!q) return this.config.renderer.badRequest();
 
-    const images = await this.imagesRepository.search({ q });
-    return this.renderer.ok({ body: JSON.stringify(images), contentType: 'application/json' });
+    const images = await this.config.imagesRepository.search({ q });
+    return this.config.renderer.ok({ body: JSON.stringify(images), contentType: 'application/json' });
   }
 }
 
