@@ -5,6 +5,10 @@ setup_aws_config:
 
 start:
 	docker-compose up app dynamodb
+test:
+	docker-compose run --rm app yarn run test
+lint:
+	docker-compose run --rm app yarn run lint
 yarn:
 	docker-compose run --rm app yarn install --check-files
 build-layer:
@@ -21,6 +25,15 @@ build-layer:
 		/lib64/libpango-1.0.so.0 \
 		/lib64/libpixman-1.so.0 \
 		./layers/canvas/lib/
+
+tfinit:
+	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform init
+tfplan:
+	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform plan
+tfapply:
+	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform apply
+tfdestroy:
+	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform destroy
 
 deploy: build-layer yarn
 	docker-compose run --rm app yarn run deploy --stage dev
