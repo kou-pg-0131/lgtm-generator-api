@@ -19,7 +19,7 @@ export class ReportsController implements IReportsController {
 
   public async create(event: APIGatewayProxyEventV2): Promise<IResponse> {
     const input = JSON.parse(event.body) as CreateInput;
-    if (Object.values(ReportType).includes(input.type)) return this.config.renderer.badRequest();
+    if (!Object.values(ReportType).includes(input.type)) return this.config.renderer.badRequest();
 
     const report = await this.config.reportsRepository.create({ type: input.type, text: input.text, lgtmId: input.lgtm_id });
     return this.config.renderer.created({ body: JSON.stringify(report), contentType: 'application/json' });
