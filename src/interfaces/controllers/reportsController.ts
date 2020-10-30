@@ -11,6 +11,7 @@ export interface IReportsController {
 type CreateInput = {
   type?: ReportType;
   text?: string;
+  lgtm_id?: string;
 };
 
 export class ReportsController implements IReportsController {
@@ -25,11 +26,11 @@ export class ReportsController implements IReportsController {
   public async create(event: APIGatewayProxyEventV2): Promise<IResponse> {
     const input = new JsonParser().parse<CreateInput>(event.body);
     if (!input) return this.renderer.badRequest();
-    if (input.text == undefined || input.type == undefined) return this.renderer.badRequest();
+    if (input.text == undefined || input.type == undefined || input.lgtm_id == undefined) return this.renderer.badRequest();
     if (input.text.length > 1000) return this.renderer.badRequest();
     if (!Object.values(ReportType).includes(input.type)) return this.renderer.badRequest();
 
-    const report = await this.reportsUsecase.create({ type: input.type, text: input.text });
+    const report = await this.reportsUsecase.create({ type: input.type, text: input.text, lgtmId: input.lgtm_id });
     return this.renderer.created({ body: JSON.stringify(report), contentType: 'application/json' });
   }
 }

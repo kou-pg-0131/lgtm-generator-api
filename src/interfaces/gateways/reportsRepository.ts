@@ -11,10 +11,12 @@ export class ReportsRepository implements IReportsRepository {
     this.tableName = config.tableName;
   }
 
-  public async create(params: { type: ReportType; text: string; }): Promise<Report> {
+  public async create(params: { lgtmId: string; type: ReportType; text: string; }): Promise<Report> {
     const report: Report = {
-      ...params,
       id: uuid.v4(),
+      lgtm_id: params.lgtmId,
+      type: params.type,
+      text: params.text,
       created_at: new Date().toISOString(),
     };
 
