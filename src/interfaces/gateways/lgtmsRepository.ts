@@ -47,30 +47,14 @@ export class LgtmsRepository implements ILgtmsRepository {
 
   public async create(params: { imageSrc: string | Buffer; }): Promise<Lgtm> {
     const image = await this.imageLoader.load(params.imageSrc);
-    const buf = await this.lgtmWriter.write(image);
-    const id = uuid.v4();
-    const created_at = new Date().toISOString();
+    const lgtmBuf = await this.lgtmWriter.write(image);
+    const lgtm: Lgtm = { id: uuid.v4(), status: 'pending', created_at: new Date().toISOString() };
 
-    const lgtm: Lgtm = {
-      id,
-      status: 'pending',
-      created_at,
-    };
-
-    await this.dynamodbDocumentClient.put({
-      TableName: this.tableName,
-      Item: lgtm,
-    }).promise();
-
-    await this.fileStorage.save({
-      path: id,
-      data: buf,
-      contentType: 'image/png',
-    });
-
+    await this.dynamodbDocumentClient.put({ TableName: this.tableName, Item: lgtm }).promise();
+    await this.fileStorage.save({ path: lgtm.id, data: lgtmBuf, contentType: 'image/png' });
     await this.dynamodbDocumentClient.update({
       TableName: this.tableName,
-      Key: { id, created_at },
+      Key: { id: lgtm.id, created_at: lgtm.created_at },
       UpdateExpression: 'set #s = :s',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: { ':s': 'ok' },
