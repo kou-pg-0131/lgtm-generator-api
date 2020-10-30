@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import 'source-map-support/register';
-import { IImagesUsecase } from '../../usecases';
+import { IImagesRepository } from '../../usecases';
 import { ImagesControllerFactory, IRenderer, IResponse } from '.';
 
 export interface IImagesController {
@@ -9,10 +9,10 @@ export interface IImagesController {
 
 export class ImagesController implements IImagesController {
   private renderer: IRenderer;
-  private imagesUsecase: IImagesUsecase;
+  private imagesRepository: IImagesRepository;
 
-  constructor(config: { imagesUsecase: IImagesUsecase; renderer: IRenderer; }) {
-    this.imagesUsecase = config.imagesUsecase;
+  constructor(config: { imagesRepository: IImagesRepository; renderer: IRenderer; }) {
+    this.imagesRepository = config.imagesRepository;
     this.renderer = config.renderer;
   }
 
@@ -20,7 +20,7 @@ export class ImagesController implements IImagesController {
     const q = event.queryStringParameters?.q;
     if (!q) return this.renderer.badRequest();
 
-    const images = await this.imagesUsecase.search({ q });
+    const images = await this.imagesRepository.search({ q });
     return this.renderer.ok({ body: JSON.stringify(images), contentType: 'application/json' });
   }
 }

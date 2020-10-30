@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { ILgtmsUsecase } from '../../usecases';
+import { ILgtmsRepository } from '../../usecases';
 import { LgtmsControllerFactory, IRenderer, IResponse, JsonParser } from '.';
 import 'source-map-support/register';
 
@@ -15,15 +15,15 @@ type CreateInput = {
 
 export class LgtmsController implements ILgtmsController {
   private renderer: IRenderer;
-  private lgtmsUsecase: ILgtmsUsecase;
+  private lgtmsRepository: ILgtmsRepository;
 
-  constructor(config: { lgtmsUsecase: ILgtmsUsecase; renderer: IRenderer; }) {
-    this.lgtmsUsecase = config.lgtmsUsecase;
+  constructor(config: { lgtmsRepository: ILgtmsRepository; renderer: IRenderer; }) {
+    this.lgtmsRepository = config.lgtmsRepository;
     this.renderer = config.renderer;
   }
 
   public async getAll(event: APIGatewayProxyEventV2): Promise<IResponse> {
-    const { lgtms, evaluatedId } = await this.lgtmsUsecase.getAll({ evaluatedId: event.queryStringParameters?.evaluated_id });
+    const { lgtms, evaluatedId } = await this.lgtmsRepository.getAll({ evaluatedId: event.queryStringParameters?.evaluated_id });
     return this.renderer.ok({ body: JSON.stringify({ lgtms, evaluated_id: evaluatedId }), contentType: 'application/json' });
   }
 
@@ -34,7 +34,7 @@ export class LgtmsController implements ILgtmsController {
     if (input.base64 == undefined && input.url == undefined) return this.renderer.badRequest();
     if (typeof (input.base64 || input.url) !== 'string') return this.renderer.badRequest();
 
-    const lgtm = await this.lgtmsUsecase.create({ imageSrc: input.url || Buffer.from(input.base64, 'base64') });
+    const lgtm = await this.lgtmsRepository.create({ imageSrc: input.url || Buffer.from(input.base64, 'base64') });
     return this.renderer.created({ body: JSON.stringify(lgtm), contentType: 'application/json' });
   }
 }

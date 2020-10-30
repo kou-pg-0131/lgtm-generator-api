@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { ReportType } from '../../domain';
-import { IReportsUsecase } from '../../usecases';
+import { IReportsRepository } from '../../usecases';
 import { JsonParser, ReportsControllerFactory, IRenderer, IResponse } from '.';
 import * as uuid from 'uuid';
 import 'source-map-support/register';
@@ -17,10 +17,10 @@ type CreateInput = {
 
 export class ReportsController implements IReportsController {
   private renderer: IRenderer;
-  private reportsUsecase: IReportsUsecase;
+  private reportsRepository: IReportsRepository;
 
-  constructor(config: { reportsUsecase: IReportsUsecase; renderer: IRenderer; }) {
-    this.reportsUsecase = config.reportsUsecase;
+  constructor(config: { reportsRepository: IReportsRepository; renderer: IRenderer; }) {
+    this.reportsRepository = config.reportsRepository;
     this.renderer = config.renderer;
   }
 
@@ -37,7 +37,7 @@ export class ReportsController implements IReportsController {
     if (!Object.values(ReportType).includes(input.type)) return this.renderer.badRequest();
     if (!uuid.validate(input.lgtm_id)) return this.renderer.badRequest();
 
-    const report = await this.reportsUsecase.create({ type: input.type, text: input.text, lgtmId: input.lgtm_id });
+    const report = await this.reportsRepository.create({ type: input.type, text: input.text, lgtmId: input.lgtm_id });
     return this.renderer.created({ body: JSON.stringify(report), contentType: 'application/json' });
   }
 }

@@ -24,8 +24,8 @@ export class LgtmsRepository implements ILgtmsRepository {
     this.lgtmWriter = config.lgtmWriter;
   }
 
-  public async getAll(evaluatedId?: string): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
-    const evaluatedKey: Lgtm | undefined = evaluatedId ? await this.get(evaluatedId) : undefined;
+  public async getAll(params: { evaluatedId?: string; }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }> {
+    const evaluatedKey: Lgtm | undefined = params.evaluatedId ? await this.get(params.evaluatedId) : undefined;
 
     const response = await this.dynamodbDocumentClient.query({
       ExclusiveStartKey: evaluatedKey,
