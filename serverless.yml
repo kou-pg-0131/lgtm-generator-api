@@ -84,6 +84,7 @@ functions:
       - http:
           method: "post"
           path: "/v1/reports"
+          cors: true
 
   searchImages:
     timeout: 30
