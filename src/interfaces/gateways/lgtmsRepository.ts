@@ -41,17 +41,8 @@ export class LgtmsRepository implements ILgtmsRepository {
     return { lgtms: response.Items as Lgtm[], evaluatedId: response.LastEvaluatedKey?.id };
   }
 
-  public async create(params: { base64?: string; url?: string; }): Promise<Lgtm> {
-    const bufOrUrl = (() => {
-      if (params.base64) {
-        return Buffer.from(params.base64, 'base64');
-      } else if (params.url) {
-        return params.url;
-      } else {
-        throw new Error('Bad Request'); // FIXME: custom error
-      }
-    })();
-    const image = await this.imageLoader.load(bufOrUrl);
+  public async create(params: { imageSrc: string | Buffer; }): Promise<Lgtm> {
+    const image = await this.imageLoader.load(params.imageSrc);
     const buf = await this.lgtmWriter.write(image);
     const id = uuid.v4();
     const created_at = new Date().toISOString();

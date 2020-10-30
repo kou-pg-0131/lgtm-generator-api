@@ -3,17 +3,13 @@ import { ILgtmsRepository } from '.';
 
 export interface ILgtmsUsecase {
   getAll(params: { evaluatedId?: string; }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
-  create(params: { base64?: string; url?: string; }): Promise<Lgtm>;
+  create(params: { imageSrc: string | Buffer; }): Promise<Lgtm>;
 }
 
 export class LgtmsUsecase implements ILgtmsUsecase {
   private lgtmsRepository: ILgtmsRepository;
 
-  constructor(
-    config: {
-      lgtmsRepository: ILgtmsRepository;
-    },
-  ) {
+  constructor(config: { lgtmsRepository: ILgtmsRepository; }) {
     this.lgtmsRepository = config.lgtmsRepository;
   }
 
@@ -21,7 +17,7 @@ export class LgtmsUsecase implements ILgtmsUsecase {
     return await this.lgtmsRepository.getAll(params.evaluatedId);
   }
 
-  public async create(params: { base64?: string; url?: string; }): Promise<Lgtm> {
+  public async create(params: { imageSrc: string | Buffer; }): Promise<Lgtm> {
     return await this.lgtmsRepository.create(params);
   }
 }
