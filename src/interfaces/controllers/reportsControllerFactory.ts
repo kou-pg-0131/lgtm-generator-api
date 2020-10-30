@@ -1,6 +1,5 @@
 import { ReportsController, IReportsController } from '.';
-import { IReportsRepository } from '../../usecases';
-import { ReportsRepository } from '../gateways';
+import { ReportsRepository, IReportsRepository } from '../gateways';
 import { Renderer } from '../../infrastructures';
 
 export class ReportsControllerFactory {

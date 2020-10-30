@@ -1,6 +1,5 @@
 import { ILgtmsController, LgtmsController } from '.';
-import { ILgtmsRepository } from '../../usecases';
-import { LgtmsRepository } from '../gateways';
+import { LgtmsRepository, ILgtmsRepository } from '../gateways';
 import { ImageLoader, LgtmWriter, S3FileStorage, Renderer } from '../../infrastructures';
 
 export class LgtmsControllerFactory {

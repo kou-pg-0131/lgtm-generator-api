@@ -1,6 +1,5 @@
 import { IImagesController, ImagesController } from '.';
-import { IImagesRepository } from '../../usecases';
-import { ImagesRepository } from '../gateways';
+import { ImagesRepository, IImagesRepository } from '../gateways';
 import { ImagesSearcher, HttpClient, Renderer, UrlBuilder } from '../../infrastructures';
 
 export class ImagesControllerFactory {

@@ -1,6 +1,9 @@
 import { Image } from '../../domain';
-import { IImagesRepository } from '../../usecases';
 import { IImagesSearcher } from '.';
+
+export interface IImagesRepository {
+  search(params: { q: string; }): Promise<Image[]>;
+}
 
 export class ImagesRepository implements IImagesRepository {
   private imagesSearcher: IImagesSearcher;

@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { ILgtmsRepository } from '../../usecases';
+import { ILgtmsRepository } from '../gateways';
 import { LgtmsControllerFactory, IRenderer, IResponse, JsonParser } from '.';
 import 'source-map-support/register';
 

@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { ReportType } from '../../domain';
-import { IReportsRepository } from '../../usecases';
+import { IReportsRepository } from '../gateways';
 import { JsonParser, ReportsControllerFactory, IRenderer, IResponse } from '.';
 import * as uuid from 'uuid';
 import 'source-map-support/register';

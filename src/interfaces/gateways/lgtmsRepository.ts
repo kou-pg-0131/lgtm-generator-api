@@ -1,7 +1,11 @@
 import * as uuid from 'uuid';
 import { Lgtm } from '../../domain';
-import { ILgtmsRepository } from '../../usecases';
 import { DynamoDBDocumentClientFactory, IFileStorage, IImageLoader, ILgtmWriter } from '.';
+
+export interface ILgtmsRepository {
+  getAll(params: { evaluatedId?: string }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
+  create(params: { imageSrc: string | Buffer; }): Promise<Lgtm>;
+}
 
 export class LgtmsRepository implements ILgtmsRepository {
   private dynamodbDocumentClient = new DynamoDBDocumentClientFactory().create();

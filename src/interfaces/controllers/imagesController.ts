@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandlerV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import 'source-map-support/register';
-import { IImagesRepository } from '../../usecases';
+import { IImagesRepository } from '../gateways';
 import { ImagesControllerFactory, IRenderer, IResponse } from '.';
 
 export interface IImagesController {

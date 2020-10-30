@@ -1,7 +1,10 @@
 import * as uuid from 'uuid';
 import { Report, ReportType } from '../../domain';
-import { IReportsRepository } from '../../usecases';
 import { DynamoDBDocumentClientFactory } from '.';
+
+export interface IReportsRepository {
+  create(params: { lgtmId: string; type: ReportType; text: string; }): Promise<Report>;
+}
 
 export class ReportsRepository implements IReportsRepository {
   private dynamodbDocumentClient = new DynamoDBDocumentClientFactory().create();
