@@ -38,6 +38,7 @@ provider:
   profile: "default"
   region: "us-east-1"
   runtime: "nodejs12.x"
+  apiName: "${self:custom.prefix}"
   iamRoleStatements:
     - Effect: "Allow"
       Action:
