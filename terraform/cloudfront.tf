@@ -18,7 +18,7 @@ resource aws_cloudfront_distribution api {
     target_origin_id       = data.aws_api_gateway_rest_api.main.id
     viewer_protocol_policy = "redirect-to-https"
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     compress               = true
 
     default_ttl = 0
