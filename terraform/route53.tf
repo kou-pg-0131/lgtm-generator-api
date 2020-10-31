@@ -28,3 +28,15 @@ resource aws_acm_certificate_validation lgtms {
   certificate_arn         = aws_acm_certificate.lgtms.arn
   validation_record_fqdns = [aws_route53_record.lgtms_certificate_validation.fqdn]
 }
+
+resource aws_route53_record lgtms {
+  zone_id = data.aws_route53_zone.main.id
+  name    = local.lgtms_domain
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.lgtms.domain_name
+    zone_id                = aws_cloudfront_distribution.lgtms.hosted_zone_id
+    evaluate_target_health = false
+  }
+}

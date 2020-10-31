@@ -1,6 +1,6 @@
 resource aws_s3_bucket lgtms {
   bucket        = "${var.stage == "prod" ? local.product : local.prefix}-lgtms"
-  acl           = "public-read"
+  acl           = "private"
   force_destroy = true
 
   versioning {
@@ -16,14 +16,11 @@ resource aws_s3_bucket_policy lgtms {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Condition = length(var.ip_whitelist) == 0 ? {} : {
-          IpAddress = {
-            "aws:SourceIp" = var.ip_whitelist
-          }
+        Effect = "Allow"
+        Principal = {
+          AWS = aws_cloudfront_origin_access_identity.lgtms.iam_arn
         }
+        Action   = "s3:GetObject"
         Resource = "arn:aws:s3:::${aws_s3_bucket.lgtms.id}/*"
       }
     ]
