@@ -20,7 +20,7 @@ export class Renderer implements IRenderer {
   private buildHeaders(contentType?: string): IHeaders {
     return {
       'Content-Type': contentType || 'application/json',
-      'Access-Control-Allow-Origin': process.env.ACCESS_CONTROL_ALLOW_ORIGIN,
+      'Access-Control-Allow-Origin': process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*',
     };
   }
 }
