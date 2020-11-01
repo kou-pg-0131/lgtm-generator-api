@@ -30,3 +30,7 @@ terraform.tfvars
 
 # eslint
 /.eslintcache
+
+# circle-env
+.circle-env/circle-token
+.circle-env/.env
