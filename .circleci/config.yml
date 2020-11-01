@@ -87,6 +87,7 @@ jobs:
     executor: terraform
     steps:
       - checkout
+      - run: apk --update add curl bash
       - setup_aws_config
       - terraform:
           stage: dev
@@ -109,6 +110,7 @@ jobs:
         type: string
     steps:
       - checkout
+      - run: apk --update add curl bash
       - setup_aws_config
       - terraform:
           stage: << parameters.stage >>
