@@ -2,6 +2,7 @@ service:
   name: "${self:custom.product}"
 
 frameworkVersion: "2"
+configValidationMode: error
 
 custom:
   product: "lgtm-generator-api"
