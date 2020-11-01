@@ -94,12 +94,13 @@ jobs:
       - terraform:
           stage: dev
           command: plan
-      - terraform:
-          stage: prod
-          command: init
-      - terraform:
-          stage: prod
-          command: plan
+      # - terraform:
+      #     stage: prod
+      #     command: init
+      # - terraform:
+      #     stage: prod
+      #     command: plan
+      - slack/status
 
   terraform_apply:
     executor: terraform
@@ -115,6 +116,7 @@ jobs:
       - terraform:
           stage: << parameters.stage >>
           command: apply -auto-approve
+      - slack/status
 
   deploy:
     executor: node
