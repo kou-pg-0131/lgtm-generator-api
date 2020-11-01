@@ -18,9 +18,14 @@ export class Renderer implements IRenderer {
   }
 
   private buildHeaders(contentType?: string): IHeaders {
+    const accessControlAllowOrigin =
+      process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true' ?
+        '*' :
+        process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*' ;
+
     return {
       'Content-Type': contentType || 'application/json',
-      'Access-Control-Allow-Origin': process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*',
+      'Access-Control-Allow-Origin': accessControlAllowOrigin,
     };
   }
 }
