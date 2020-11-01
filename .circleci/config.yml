@@ -8,6 +8,10 @@ executors:
     docker:
       - image: lambci/lambda:build-nodejs12.x
 
+  terraform:
+    docker:
+      - image: hashicorp/terraform:0.13.5
+
 commands:
   yarn_install:
     steps:
@@ -47,6 +51,19 @@ commands:
             echo '[default]'                                       > ~/.aws/config
             echo "region = us-east-1"                             >> ~/.aws/config
 
+  terraform:
+    parameters:
+      stage:
+        type: string
+      command:
+        type: string
+    steps:
+      - run:
+          name: terraform << parameters.command >> - << parameters.stage >>
+          command: |
+            cd ~/project/terraform/envs/<< parameters.stage >>
+            terraform << parameters.command >>
+
 jobs:
   test:
     executor: node
@@ -65,6 +82,17 @@ jobs:
       - yarn_install
       - run: yarn run lint
       - slack/status
+
+  terraform_plan:
+    executor: terraform
+    steps:
+      - checkout
+      - terraform:
+          stage: dev
+          command: init
+      - terraform:
+          stage: dev
+          command: plan
 
   deploy:
     executor: node
@@ -109,12 +137,13 @@ workflows:
     jobs:
       - test
       - lint
+      - terraform_plan
 
       - slack/approval-notification:
-          requires: [test, lint]
+          requires: [test, lint, terraform_plan]
       - approval_deploy_dev:
           type: approval
-          requires: [test, lint]
+          requires: [test, lint, terraform_plan]
 
       - deploy:
           name: deploy_dev
