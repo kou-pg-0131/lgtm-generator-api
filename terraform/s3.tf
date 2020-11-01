@@ -1,7 +1,7 @@
 resource aws_s3_bucket lgtms {
   bucket        = "${var.stage == "prod" ? local.product : local.prefix}-lgtms"
   acl           = "private"
-  force_destroy = true
+  force_destroy = false
 
   versioning {
     enabled = true
