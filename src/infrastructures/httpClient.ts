@@ -1,24 +1,17 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 export interface IHttpClient {
-  get(url: string): Promise<HttpResponse>;
+  get<T>(url: string): Promise<HttpResponse<T>>;
 }
 
-export type HttpResponse = {
+export type HttpResponse<T> = {
   status: number;
-  data: any;
+  data: T;
 };
 
 export class HttpClient implements IHttpClient {
-  public async get(url: string): Promise<HttpResponse> {
-    const response = await axios.get(url, this.buildAxiosRequestConfig());
-    return {
-      data: response.data,
-      status: response.status,
-    };
-  }
-
-  private buildAxiosRequestConfig(): AxiosRequestConfig {
-    return { validateStatus: () => true };
+  public async get<T>(url: string): Promise<HttpResponse<T>> {
+    const response = await axios.get(url);
+    return { data: response.data, status: response.status };
   }
 }

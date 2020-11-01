@@ -2,6 +2,13 @@ import { Image } from '../domain';
 import { IImagesSearcher } from '../interfaces/gateways';
 import { IHttpClient, IUrlBuilder } from '.';
 
+interface ISearchResult {
+  items: {
+    title: string;
+    link: string;
+  }[];
+}
+
 export class ImagesSearcher implements IImagesSearcher {
   constructor(
     private config: {
@@ -25,11 +32,8 @@ export class ImagesSearcher implements IImagesSearcher {
         fileType: 'jpeg',
       },
     );
-    const response = await this.config.httpClient.get(endpoint);
 
-    return response.data.items.map(item => ({
-      title: item.title,
-      url: item.link,
-    }));
+    const response = await this.config.httpClient.get<ISearchResult>(endpoint);
+    return response.data.items.map(item => ({ title: item.title, url: item.link }));
   }
 }
