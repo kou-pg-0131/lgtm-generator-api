@@ -39,6 +39,7 @@ provider:
   region: "us-east-1"
   runtime: "nodejs12.x"
   apiName: "${self:custom.prefix}"
+  stage: "${opt:stage, 'dev'}"
   iamRoleStatements:
     - Effect: "Allow"
       Action:
