@@ -20,18 +20,31 @@ resource aws_cloudfront_distribution api {
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     compress               = true
-
-    default_ttl = 0
-    max_ttl     = 0
-    min_ttl     = 0
+    default_ttl            = 0
+    max_ttl                = 0
+    min_ttl                = 0
 
     forwarded_values {
       query_string = true
+      cookies { forward = "none" }
+      headers = []
+    }
+  }
 
-      cookies {
-        forward = "none"
-      }
+  ordered_cache_behavior {
+    path_pattern           = "/v1/images"
+    target_origin_id       = data.aws_api_gateway_rest_api.main.id
+    viewer_protocol_policy = "redirect-to-https"
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    compress               = true
+    default_ttl            = 3600
+    max_ttl                = 86400
+    min_ttl                = 0
 
+    forwarded_values {
+      query_string = true
+      cookies { forward = "none" }
       headers = []
     }
   }
