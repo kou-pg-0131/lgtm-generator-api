@@ -87,12 +87,28 @@ jobs:
     executor: terraform
     steps:
       - checkout
+      - setup_aws_config
       - terraform:
           stage: dev
           command: init
       - terraform:
           stage: dev
           command: plan
+
+  terraform_apply:
+    executor: terraform
+    parameters:
+      stage:
+        type: string
+    steps:
+      - checkout
+      - setup_aws_config
+      - terraform:
+          stage: << parameters.stage >>
+          command: init
+      - terraform:
+          stage: << parameters.stage >>
+          command: apply -auto-approve
 
   deploy:
     executor: node
@@ -149,3 +165,7 @@ workflows:
           name: deploy_dev
           stage: dev
           requires: [approval_deploy_dev]
+      - terraform_apply:
+          name: terraform_apply_dev
+          stage: dev
+          requires: [deploy_dev]
