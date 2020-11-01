@@ -94,6 +94,12 @@ jobs:
       - terraform:
           stage: dev
           command: plan
+      - terraform:
+          stage: prod
+          command: init
+      - terraform:
+          stage: prod
+          command: plan
 
   terraform_apply:
     executor: terraform
