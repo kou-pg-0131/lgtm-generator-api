@@ -1,107 +1,107 @@
 service:
-  name: "${self:custom.product}"
+  name: ${self:custom.product}
 
 frameworkVersion: "2"
 configValidationMode: error
 
 custom:
-  product: "lgtm-generator-api"
-  prefix: "${self:custom.product}-${self:provider.stage}"
+  product: lgtm-generator-api
+  prefix: ${self:custom.product}-${self:provider.stage}
   webpack:
-    packager: "yarn"
-    webpackConfig: "./webpack.config.js"
+    packager: yarn
+    webpackConfig: ./webpack.config.js
     includeModules: true
   serverless-offline:
     httpPort: 8080
     useChildProcesses: true
   dynamodb:
-    stages: ["dev"]
+    stages: [dev]
     start:
       port: 8000
       inMemory: true
       migrate: true
   variables:
     accessControlAllowOrigin:
-      dev: "https://dev.lgtm-generator.kou-pg.com"
-      prod: "https://lgtm-generator.kou-pg.com"
+      dev: https://dev.lgtm-generator.kou-pg.com
+      prod: https://lgtm-generator.kou-pg.com
     dynamodbTable:
-      lgtms: "${self:custom.prefix}-lgtms"
-      reports: "${self:custom.prefix}-reports"
+      lgtms: ${self:custom.prefix}-lgtms
+      reports: ${self:custom.prefix}-reports
     s3Bucket:
       lgtms:
-        dev: "${self:custom.prefix}-lgtms"
-        prod: "${self:custom.product}-lgtms"
+        dev: ${self:custom.prefix}-lgtms
+        prod: ${self:custom.product}-lgtms
 
 plugins:
-  - "serverless-webpack"
-  - "serverless-offline"
-  - "serverless-dynamodb-local"
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dynamodb-local
 
 provider:
-  name: "aws"
-  profile: "default"
-  region: "us-east-1"
-  runtime: "nodejs12.x"
-  apiName: "${self:custom.prefix}"
-  stage: "${opt:stage, 'dev'}"
+  name: aws
+  profile: default
+  region: us-east-1
+  runtime: nodejs12.x
+  apiName: ${self:custom.prefix}
+  stage: ${opt:stage, "dev"}
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: Allow
       Action:
-        - "dynamodb:PutItem"
-        - "dynamodb:UpdateItem"
-        - "dynamodb:Query"
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:Query
       Resource:
         - Fn::Join:
             - ":"
-            - - "arn:aws:dynamodb"
-              - Ref: "AWS::Region"
-              - Ref: "AWS::AccountId"
-              - "table/${self:custom.prefix}-*"
-    - Effect: "Allow"
-      Action: "s3:PutObject"
+            - - arn:aws:dynamodb
+              - Ref: AWS::Region
+              - Ref: AWS::AccountId
+              - table/${self:custom.prefix}-*
+    - Effect: Allow
+      Action: s3:PutObject
       Resource:
         Fn::Join:
           - ""
           - - "arn:aws:s3:::"
-            - "${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}"
-            - "/*"
+            - ${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}
+            - /*
   apiGateway:
     minimumCompressionSize: 1024
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-    GOOGLE_API_KEY: "${file(./secrets.yml):googleApiKey}"
-    GOOGLE_CUSTOM_SEARCH_ENGINE_ID: "${file(./secrets.yml):googleCustomSearchEngineId}"
-    S3_BUCKET_LGTMS: "${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}"
-    DYNAMODB_TABLE_LGTMS: "${self:custom.variables.dynamodbTable.lgtms}"
-    DYNAMODB_TABLE_REPORTS: "${self:custom.variables.dynamodbTable.reports}"
-    ACCESS_CONTROL_ALLOW_ORIGIN: "${self:custom.variables.accessControlAllowOrigin.${self:provider.stage}}"
+    GOOGLE_API_KEY: ${file(./secrets.yml):googleApiKey}
+    GOOGLE_CUSTOM_SEARCH_ENGINE_ID: ${file(./secrets.yml):googleCustomSearchEngineId}
+    S3_BUCKET_LGTMS: ${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}
+    DYNAMODB_TABLE_LGTMS: ${self:custom.variables.dynamodbTable.lgtms}
+    DYNAMODB_TABLE_REPORTS: ${self:custom.variables.dynamodbTable.reports}
+    ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.variables.accessControlAllowOrigin.${self:provider.stage}}
 
 layers:
   canvas:
-    name: "${self:custom.prefix}-canvas"
-    path: "layers/canvas"
+    name: ${self:custom.prefix}-canvas
+    path: layers/canvas
 
 functions:
   createReport:
     timeout: 30
-    handler: "src/interfaces/controllers/reportsController.createReport"
+    handler: src/interfaces/controllers/reportsController.createReport
     layers:
-      - Ref: "CanvasLambdaLayer"
+      - Ref: CanvasLambdaLayer
     events:
       - http:
-          method: "post"
-          path: "/v1/reports"
+          method: post
+          path: /v1/reports
           cors: true
 
   searchImages:
     timeout: 30
-    handler: "src/interfaces/controllers/imagesController.searchImages"
+    handler: src/interfaces/controllers/imagesController.searchImages
     layers:
-      - Ref: "CanvasLambdaLayer"
+      - Ref: CanvasLambdaLayer
     events:
       - http:
-          method: "get"
-          path: "/v1/images"
+          method: get
+          path: /v1/images
           request:
             parameters:
               querystrings:
@@ -109,69 +109,69 @@ functions:
 
   getAllLgtms:
     timeout: 30
-    handler: "src/interfaces/controllers/lgtmsController.getAllLgtms"
+    handler: src/interfaces/controllers/lgtmsController.getAllLgtms
     layers:
-      - Ref: "CanvasLambdaLayer"
+      - Ref: CanvasLambdaLayer
     events:
       - http:
-          method: "get"
-          path: "/v1/lgtms"
+          method: get
+          path: /v1/lgtms
 
   createLgtm:
     timeout: 30
-    handler: "src/interfaces/controllers/lgtmsController.createLgtm"
+    handler: src/interfaces/controllers/lgtmsController.createLgtm
     layers:
-      - Ref: "CanvasLambdaLayer"
+      - Ref: CanvasLambdaLayer
     events:
       - http:
-          method: "post"
-          path: "/v1/lgtms"
+          method: post
+          path: /v1/lgtms
           cors: true
 
 resources:
   Resources:
     ReportsTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: AWS::DynamoDB::Table
       Properties:
-        TableName: "${self:custom.variables.dynamodbTable.reports}"
+        TableName: ${self:custom.variables.dynamodbTable.reports}
         AttributeDefinitions:
-          - AttributeName: "id"
-            AttributeType: "S"
-          - AttributeName: "created_at"
-            AttributeType: "S"
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: created_at
+            AttributeType: S
         KeySchema:
-          - AttributeName: "id"
-            KeyType: "HASH"
-          - AttributeName: "created_at"
-            KeyType: "RANGE"
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: created_at
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
     LgtmsTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: AWS::DynamoDB::Table
       Properties:
-        TableName: "${self:custom.variables.dynamodbTable.lgtms}"
+        TableName: ${self:custom.variables.dynamodbTable.lgtms}
         AttributeDefinitions:
-          - AttributeName: "id"
-            AttributeType: "S"
-          - AttributeName: "created_at"
-            AttributeType: "S"
-          - AttributeName: "status"
-            AttributeType: "S"
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: created_at
+            AttributeType: S
+          - AttributeName: status
+            AttributeType: S
         KeySchema:
-          - AttributeName: "id"
-            KeyType: "HASH"
-          - AttributeName: "created_at"
-            KeyType: "RANGE"
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: created_at
+            KeyType: RANGE
         GlobalSecondaryIndexes:
-          - IndexName: "index_by_status"
+          - IndexName: index_by_status
             KeySchema:
-              - AttributeName: "status"
-                KeyType: "HASH"
-              - AttributeName: "created_at"
-                KeyType: "RANGE"
+              - AttributeName: status
+                KeyType: HASH
+              - AttributeName: created_at
+                KeyType: RANGE
             Projection:
-              ProjectionType: "ALL"
+              ProjectionType: ALL
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
