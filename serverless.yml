@@ -20,6 +20,9 @@ custom:
       inMemory: true
       migrate: true
   variables:
+    accessControlAllowOrigin:
+      dev: "https://dev.lgtm-generator.kou-pg.com"
+      prod: "https://lgtm-generator.kou-pg.com"
     dynamodbTable:
       lgtms: "${self:custom.prefix}-lgtms"
       reports: "${self:custom.prefix}-reports"
@@ -70,6 +73,7 @@ provider:
     S3_BUCKET_LGTMS: "${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}"
     DYNAMODB_TABLE_LGTMS: "${self:custom.variables.dynamodbTable.lgtms}"
     DYNAMODB_TABLE_REPORTS: "${self:custom.variables.dynamodbTable.reports}"
+    ACCESS_CONTROL_ALLOW_ORIGIN: "${self:custom.variables.accessControlAllowOrigin.${self:provider.stage}}"
 
 layers:
   canvas:

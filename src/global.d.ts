@@ -7,5 +7,6 @@ declare namespace NodeJS {
     readonly S3_BUCKET_LGTMS: string;
     readonly DYNAMODB_TABLE_LGTMS: string;
     readonly DYNAMODB_TABLE_REPORTS: string;
+    readonly ACCESS_CONTROL_ALLOW_ORIGIN: string;
   }
 }
