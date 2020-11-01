@@ -68,6 +68,9 @@ jobs:
 
   deploy:
     executor: node
+    parameters:
+      stage:
+        type: string
     steps:
       - checkout
       - setup_aws_config
@@ -98,7 +101,7 @@ jobs:
               /lib64/libpango-1.0.so.0 \
               /lib64/libpixman-1.so.0 \
               ./layers/canvas/lib/
-      - run: yarn run deploy --stage dev
+      - run: yarn run deploy --stage << parameters.stage >>
       - slack/status
 
 workflows:
@@ -106,5 +109,14 @@ workflows:
     jobs:
       - test
       - lint
-      - deploy:
+
+      - slack/approval-notification:
           requires: [test, lint]
+      - approval_deploy_dev:
+          type: approval
+          requires: [test, lint]
+
+      - deploy:
+          name: deploy_dev
+          stage: dev
+          requires: [approval_deploy_dev]
