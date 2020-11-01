@@ -1,0 +1,53 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@3.4.2
+
+executors:
+  node:
+    docker:
+      - image: lambci/lambda:build-nodejs12.x
+
+commands:
+  yarn_install:
+    steps:
+      - restore_cache:
+          key: v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run: yarn install --check-files
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+
+  install_yarn:
+    steps:
+      - run:
+          name: install yarn
+          command: |
+            echo 'export PATH=$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH' >> $BASH_ENV
+            curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
+
+jobs:
+  test:
+    executor: node
+    steps:
+      - checkout
+      - install_yarn
+      - yarn_install
+      - run: yarn run test
+      - slack/status
+
+  lint:
+    executor: node
+    steps:
+      - checkout
+      - install_yarn
+      - yarn_install
+      - run: yarn run lint
+      - slack/status
+
+workflows:
+  build:
+    jobs:
+      - test
+      - lint
