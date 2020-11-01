@@ -157,15 +157,24 @@ workflows:
 
       - slack/approval-notification:
           requires: [test, lint, terraform_plan]
-      - approval_deploy_dev:
+      - approval_deploy:
           type: approval
           requires: [test, lint, terraform_plan]
 
       - deploy:
           name: deploy_dev
           stage: dev
-          requires: [approval_deploy_dev]
+          requires: [approval_deploy]
       - terraform_apply:
           name: terraform_apply_dev
           stage: dev
           requires: [deploy_dev]
+
+      - deploy:
+          name: deploy_prod
+          stage: prod
+          requires: [approval_deploy]
+      - terraform_apply:
+          name: terraform_apply_prod
+          stage: prod
+          requires: [deploy_prod]
