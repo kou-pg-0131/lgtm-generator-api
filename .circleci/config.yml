@@ -179,6 +179,9 @@ workflows:
           name: terraform_apply_dev
           stage: dev
           requires: [deploy_dev]
+          filters:
+            branches:
+              ignore: main
 
       - deploy:
           name: deploy_prod
@@ -188,3 +191,6 @@ workflows:
           name: terraform_apply_prod
           stage: prod
           requires: [deploy_prod]
+          filters:
+            branches:
+              only: main
