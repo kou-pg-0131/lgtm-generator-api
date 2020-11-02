@@ -12,4 +12,11 @@ export class S3FileStorage implements IFileStorage {
       ContentType: params.contentType,
     }).promise();
   }
+
+  public async delete(params: { path: string; }): Promise<void> {
+    await this.config.s3Client.deleteObject({
+      Bucket: this.config.bucket,
+      Key: params.path,
+    }).promise();
+  }
 }
