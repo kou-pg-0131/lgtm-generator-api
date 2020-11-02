@@ -6,11 +6,16 @@ import 'source-map-support/register';
 export interface ILgtmsController {
   getAll(event: APIGatewayProxyEventV2): Promise<IResponse>;
   create(event: APIGatewayProxyEventV2): Promise<IResponse>;
+  delete(event?: { lgtmId?: string; }): Promise<void>;
 }
 
 type CreateInput = {
   base64?: string;
   url?: string;
+};
+
+type DeleteInput = {
+  lgtmId?: string;
 };
 
 export class LgtmsController implements ILgtmsController {
@@ -28,6 +33,10 @@ export class LgtmsController implements ILgtmsController {
     const lgtm = await this.config.lgtmsRepository.create({ imageSrc: input.url || Buffer.from(input.base64, 'base64') });
     return this.config.renderer.created({ body: JSON.stringify(lgtm), contentType: 'application/json' });
   }
+
+  public async delete(event?: DeleteInput): Promise<void> {
+    console.log(event);
+  }
 }
 
 export const getAllLgtms: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
@@ -36,4 +45,8 @@ export const getAllLgtms: APIGatewayProxyHandlerV2 = async (event, _context, _ca
 
 export const createLgtm: APIGatewayProxyHandlerV2 = async (event, _context, _callback) => {
   return new LgtmsControllerFactory().create().create(event) as APIGatewayProxyResultV2;
+};
+
+export const deleteLgtm = async (event?: DeleteInput): Promise<void> => {
+  return new LgtmsControllerFactory().create().delete(event);
 };
