@@ -65,6 +65,11 @@ provider:
           - - "arn:aws:s3:::"
             - ${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}
             - /*
+  logs:
+    restApi:
+      executionLogging: false
+      accessLogging: true
+      format: '{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "httpMethod":"$context.httpMethod", "resourcePath":"$context.resourcePath", "status":"$context.status", "protocol":"$context.protocol" }'
   apiGateway:
     minimumCompressionSize: 1024
   environment:
