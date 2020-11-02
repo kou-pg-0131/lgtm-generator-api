@@ -8,7 +8,7 @@ export class LgtmWriter implements ILgtmWriter {
     registerFont('src/fonts/Archivo_Black/ArchivoBlack-Regular.ttf', { family: fontFamily });
 
     // resize
-    const sideLength = 500;
+    const sideLength = 400;
     const [distWidth, distHeight] = ((): [number, number] => {
       if (image.width > image.height) {
         return [sideLength, sideLength / image.width * image.height];
