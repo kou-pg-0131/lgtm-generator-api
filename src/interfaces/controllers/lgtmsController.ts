@@ -35,7 +35,10 @@ export class LgtmsController implements ILgtmsController {
   }
 
   public async delete(event?: DeleteInput): Promise<void> {
-    console.log(event);
+    if (!event) throw new Error('event is empty');
+    if (!event.lgtmId) throw new Error('lgtmId is empty');
+
+    await this.config.lgtmsRepository.delete({ id: event.lgtmId });
   }
 }
 

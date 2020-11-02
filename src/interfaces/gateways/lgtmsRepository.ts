@@ -6,6 +6,7 @@ import { IFileStorage, IImageLoader, ILgtmWriter } from '.';
 export interface ILgtmsRepository {
   getAll(params: { evaluatedId?: string }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
   create(params: { imageSrc: string | Buffer; }): Promise<Lgtm>;
+  delete(params: { id: string; }): Promise<void>;
 }
 
 export class LgtmsRepository implements ILgtmsRepository {
@@ -52,6 +53,10 @@ export class LgtmsRepository implements ILgtmsRepository {
     }).promise();
 
     return { ...lgtm, status: 'ok' };
+  }
+
+  public async delete(params: { id: string; }): Promise<void> {
+    console.log(params);
   }
 
   private async get(id: string): Promise<Lgtm | undefined> {
