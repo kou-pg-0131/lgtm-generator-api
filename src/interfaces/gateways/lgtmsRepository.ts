@@ -62,7 +62,7 @@ export class LgtmsRepository implements ILgtmsRepository {
       await this.config.dynamodbDocumentClient.delete({
         TableName: this.config.tableName,
         Key: { id: lgtm.id, created_at: lgtm.created_at },
-      });
+      }).promise();
     }
     await this.config.fileStorage.delete({ path: params.id });
   }
