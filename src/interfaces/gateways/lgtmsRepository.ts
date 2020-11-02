@@ -56,7 +56,15 @@ export class LgtmsRepository implements ILgtmsRepository {
   }
 
   public async delete(params: { id: string; }): Promise<void> {
-    console.log(params);
+    const lgtm = await this.get(params.id);
+
+    if (lgtm) {
+      await this.config.dynamodbDocumentClient.delete({
+        TableName: this.config.tableName,
+        Key: { id: lgtm.id, created_at: lgtm.created_at },
+      });
+    }
+    await this.config.fileStorage.delete({ path: params.id });
   }
 
   private async get(id: string): Promise<Lgtm | undefined> {
