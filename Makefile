@@ -30,6 +30,10 @@ tfinit:
 	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform init
 tfplan:
 	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform plan
+tfrefresh:
+	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform refresh
+tfshow:
+	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform show
 tfapply:
 	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform apply
 tfdestroy:
