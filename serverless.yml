@@ -18,7 +18,7 @@ custom:
     stages: [dev]
     start:
       port: 8000
-      inMemory: true
+      dbPath: ./db_data
       migrate: true
   variables:
     accessControlAllowOrigin:

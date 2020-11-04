@@ -25,6 +25,7 @@ services:
     ports: ['8000:8000']
     volumes:
       - .:/var/task
+      - db_data:/var/task/db_data
       - node_modules:/var/task/node_modules
 
   infra:
@@ -40,6 +41,7 @@ services:
 
 volumes:
   aws:
+  db_data:
   node_modules:
   yarn_cache:
   jest_cache:
