@@ -9,7 +9,7 @@ describe('HttpClient', () => {
     it('should call axios.get with correct args', async () => {
       (axios as any).get = jest.fn().mockResolvedValue({ data: 'RESPONSE', status: 200 });
       const response = await httpClient.get('https://example.com');
-      expect(response).toEqual({ data: 'RESPONSE', status: 200 });
+      expect(response).toEqual('RESPONSE');
     });
   });
 });

@@ -34,6 +34,6 @@ export class ImagesSearcher implements IImagesSearcher {
     );
 
     const response = await this.config.httpClient.get<ISearchResult>(endpoint);
-    return response.data.items.map(item => ({ title: item.title, url: item.link }));
+    return response.items.map(item => ({ title: item.title, url: item.link }));
   }
 }
