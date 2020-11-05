@@ -20,6 +20,7 @@
     "aws-sdk": "^2.773.0",
     "axios": "^0.21.0",
     "canvas": "^2.6.1",
+    "gm": "^1.23.1",
     "query-string": "^6.13.6",
     "source-map-support": "^0.5.10",
     "url-join": "^4.0.1",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
+    "@types/gm": "^1.18.9",
     "@types/jest": "^26.0.14",
     "@types/node": "^10.12.18",
     "@types/serverless": "^1.72.5",
