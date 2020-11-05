@@ -38,8 +38,7 @@ export class LgtmsRepository implements ILgtmsRepository {
   }
 
   public async create(params: { imageSrc: string | Buffer; }): Promise<Lgtm> {
-    const image = await this.config.imageLoader.load(params.imageSrc);
-    const lgtmBuf = await this.config.lgtmWriter.write(image);
+    const lgtmBuf = await this.config.lgtmWriter.write(params.imageSrc);
     const lgtm: Lgtm = { id: uuid.v4(), status: 'pending', created_at: new Date().toISOString() };
 
     await this.config.dynamodbDocumentClient.put({ TableName: this.config.tableName, Item: lgtm }).promise();
