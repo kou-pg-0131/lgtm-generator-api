@@ -82,16 +82,16 @@ provider:
     ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.variables.accessControlAllowOrigin.${self:provider.stage}}
 
 layers:
-  canvas:
-    name: ${self:custom.prefix}-canvas
-    path: layers/canvas
+  imageMagick:
+    name: ${self:custom.prefix}-imageMagick
+    path: layers/imageMagick
 
 functions:
   createReport:
     timeout: 30
     handler: src/interfaces/controllers/reportsController.createReport
     layers:
-      - Ref: CanvasLambdaLayer
+      - Ref: ImageMagickLambdaLayer
     events:
       - http:
           method: post
@@ -102,7 +102,7 @@ functions:
     timeout: 30
     handler: src/interfaces/controllers/imagesController.searchImages
     layers:
-      - Ref: CanvasLambdaLayer
+      - Ref: ImageMagickLambdaLayer
     events:
       - http:
           method: get
@@ -116,7 +116,7 @@ functions:
     timeout: 30
     handler: src/interfaces/controllers/lgtmsController.getAllLgtms
     layers:
-      - Ref: CanvasLambdaLayer
+      - Ref: ImageMagickLambdaLayer
     events:
       - http:
           method: get
@@ -126,7 +126,7 @@ functions:
     timeout: 30
     handler: src/interfaces/controllers/lgtmsController.createLgtm
     layers:
-      - Ref: CanvasLambdaLayer
+      - Ref: ImageMagickLambdaLayer
     events:
       - http:
           method: post
@@ -137,7 +137,7 @@ functions:
     timeout: 30
     handler: src/interfaces/controllers/lgtmsController.deleteLgtm
     layers:
-      - Ref: CanvasLambdaLayer
+      - Ref: ImageMagickLambdaLayer
 
 resources:
   Resources:
