@@ -12,19 +12,10 @@ lint:
 yarn:
 	docker-compose run --rm app yarn install --check-files
 build-layer:
-	docker-compose run --rm app cp \
-		/lib64/libblkid.so.1 \
-		/lib64/libjpeg.so.62 \
-		/lib64/libpangocairo-1.0.so.0 \
-		/lib64/libpng15.so.15 \
-		/lib64/libcairo.so.2 \
-		/lib64/libmount.so.1 \
-		/lib64/libpangoft2-1.0.so.0 \
-		/lib64/libuuid.so.1 \
-		/lib64/libfreetype.so.6 \
-		/lib64/libpango-1.0.so.0 \
-		/lib64/libpixman-1.so.0 \
-		./layers/canvas/lib/
+	docker run --rm \
+		--volume "$$(pwd)/layers/imageMagick/lib:/lambda/opt/lib" \
+		--volume "$$(pwd)/layers/imageMagick/bin:/lambda/opt/bin" \
+		lambci/yumda:2 yum -y install ImageMagick
 
 tfinit:
 	docker-compose run --rm --workdir /app/terraform/envs/dev infra terraform init
