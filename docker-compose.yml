@@ -10,7 +10,6 @@ services:
     volumes:
       - .:/var/task
       - aws:/root/.aws
-      - ./layers/canvas/lib:/opt/lib
       - node_modules:/var/task/node_modules
       - yarn_cache:/usr/local/share/.cache/yarn/v6
       - jest_cache:/tmp/jest_cache
