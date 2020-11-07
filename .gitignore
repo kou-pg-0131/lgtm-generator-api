@@ -34,3 +34,8 @@ terraform.tfvars
 # circle-env
 .circle-env/circle-token
 .circle-env/.env
+
+/tmp/*
+!/tmp/lgtms
+/tmp/lgtms/*
+!/tmp/lgtms/.keep
