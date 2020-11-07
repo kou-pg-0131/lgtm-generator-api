@@ -134,14 +134,14 @@ jobs:
           command: docker-compose run --rm app yarn install --check-files
       - run:
           name: build ImageMagick layer
-          command:
+          command: |
             docker run --rm \
               --volume "$(pwd)/layers/imageMagick/lib:/lambda/opt/lib" \
               --volume "$(pwd)/layers/imageMagick/bin:/lambda/opt/bin" \
               lambci/yumda:2 yum -y install ImageMagick
       - run:
           name: serverless deploy
-          command: docker-compose run --rm app yarn run package --stage << parameters.stage >>
+          command: docker-compose run --rm app yarn run deploy --stage << parameters.stage >>
       - slack/status
 
 workflows:
@@ -150,10 +150,6 @@ workflows:
       - test
       - lint
       - terraform_plan
-
-      # TODO: remove
-      - deploy:
-          stage: dev
 
       - slack/approval-notification:
           requires: [test, lint]
