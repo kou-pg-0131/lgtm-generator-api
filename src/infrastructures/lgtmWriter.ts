@@ -29,7 +29,7 @@ export class LgtmWriter implements ILgtmWriter {
   }
 
   private async calcImageSize(image: gm.State, maxSideLength: number): Promise<{ width: number; height: number; }> {
-    const [distWidth, distHeight] = await new Promise((resolve, reject) => {
+    const [width, height] = await new Promise((resolve, reject) => {
       image.size((err, size) => {
         if (err) return reject(err);
 
@@ -42,7 +42,7 @@ export class LgtmWriter implements ILgtmWriter {
         })());
       });
     });
-    return { width: distWidth, height: distHeight };
+    return { width, height };
   }
 
   private calcFontSize(width: number, height: number): { header: number; text: number; } {
