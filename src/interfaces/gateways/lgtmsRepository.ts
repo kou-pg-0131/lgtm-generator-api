@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
-import { IFileStorage, IImageLoader, ILgtmWriter } from '.';
+import { IFileStorage, ILgtmWriter } from '.';
 
 export interface ILgtmsRepository {
   getAll(params: { evaluatedId?: string }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
@@ -14,7 +14,6 @@ export class LgtmsRepository implements ILgtmsRepository {
     private config: {
       fileStorage: IFileStorage;
       tableName: string;
-      imageLoader: IImageLoader;
       lgtmWriter: ILgtmWriter;
       dynamodbDocumentClient: DynamoDB.DocumentClient;
     },

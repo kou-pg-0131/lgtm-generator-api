@@ -1,5 +1,4 @@
 export * from './httpClient';
-export * from './imageLoader';
 export * from './imagesSearcher';
 export * from './lgtmWriter';
 export * from './renderer';
