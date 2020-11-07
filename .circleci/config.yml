@@ -128,7 +128,8 @@ jobs:
     steps:
       - checkout
       - create_secrets_yml
-      - run: docker-compose build app
+      - run: docker-compose build app infra
+      - run: make setup_aws_config
       - run:
           name: yarn install
           command: docker-compose run --rm app yarn install --check-files
