@@ -13,8 +13,6 @@ services:
       - node_modules:/var/task/node_modules
       - yarn_cache:/usr/local/share/.cache/yarn/v6
       - jest_cache:/tmp/jest_cache
-    depends_on:
-      - dynamodb
 
   dynamodb:
     build:
