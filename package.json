@@ -19,7 +19,6 @@
   "dependencies": {
     "aws-sdk": "^2.773.0",
     "axios": "^0.21.0",
-    "canvas": "^2.6.1",
     "gm": "^1.23.1",
     "query-string": "^6.13.6",
     "source-map-support": "^0.5.10",
