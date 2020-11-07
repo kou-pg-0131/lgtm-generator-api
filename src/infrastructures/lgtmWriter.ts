@@ -6,7 +6,7 @@ export class LgtmWriter implements ILgtmWriter {
     const image = gm.subClass({ imageMagick: true })(src as Buffer);
 
     const maxSideLength = 400;
-    const size = await this.calcSize(image, maxSideLength);
+    const size = await this.calcImageSize(image, maxSideLength);
     const fontSize = this.calcFontSize(size.width, size.height);
 
     const buffer: Buffer = await new Promise((resolve, reject) => {
@@ -28,7 +28,7 @@ export class LgtmWriter implements ILgtmWriter {
     return buffer;
   }
 
-  private async calcSize(image: gm.State, maxSideLength: number): Promise<{ width: number; height: number; }> {
+  private async calcImageSize(image: gm.State, maxSideLength: number): Promise<{ width: number; height: number; }> {
     const [distWidth, distHeight] = await new Promise((resolve, reject) => {
       image.size((err, size) => {
         if (err) return reject(err);
@@ -48,7 +48,7 @@ export class LgtmWriter implements ILgtmWriter {
   private calcFontSize(width: number, height: number): { header: number; text: number; } {
     return {
       header: Math.min(height / 2, width / 6),
-      text: Math.min(height / 11, width / 34),
+      text: Math.min(height / 9, width / 27),
     };
   }
 }
