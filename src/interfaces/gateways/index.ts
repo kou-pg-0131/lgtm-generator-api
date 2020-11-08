@@ -5,3 +5,4 @@ export * from './imagesSearcher';
 export * from './lgtmWriter';
 export * from './lgtmsRepository';
 export * from './reportsRepository';
+export * from './httpClient';

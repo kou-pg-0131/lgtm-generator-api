@@ -1,6 +1,6 @@
 import { Image } from '../domain';
-import { IImagesSearcher } from '../interfaces/gateways';
-import { IHttpClient, IUrlBuilder } from '.';
+import { IHttpClient, IImagesSearcher } from '../interfaces/gateways';
+import { IUrlBuilder } from '.';
 
 interface ISearchResult {
   items: {

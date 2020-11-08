@@ -1,4 +1,5 @@
-import { ImagesSearcher, IUrlBuilder, IHttpClient } from '.';
+import { IHttpClient } from '../interfaces/gateways';
+import { ImagesSearcher, IUrlBuilder } from '.';
 
 describe('ImagesSearcher', () => {
   describe('search()', () => {
