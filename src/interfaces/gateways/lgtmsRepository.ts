@@ -2,10 +2,11 @@ import * as uuid from 'uuid';
 import { DynamoDB } from 'aws-sdk';
 import { Lgtm } from '../../domain';
 import { IFileStorage, ILgtmWriter } from '.';
+import axios from 'axios'; // TODO: use httpclient
 
 export interface ILgtmsRepository {
   getAll(params: { evaluatedId?: string }): Promise<{ lgtms: Lgtm[]; evaluatedId: string; }>;
-  create(params: { imageSrc: string | Buffer; }): Promise<Lgtm>;
+  create(params: { url?: string; base64?: string; }): Promise<Lgtm>;
   delete(params: { id: string; }): Promise<void>;
 }
 
@@ -36,8 +37,10 @@ export class LgtmsRepository implements ILgtmsRepository {
     return { lgtms: response.Items as Lgtm[], evaluatedId: response.LastEvaluatedKey?.id };
   }
 
-  public async create(params: { imageSrc: string | Buffer; }): Promise<Lgtm> {
-    const lgtmBuf = await this.config.lgtmWriter.write(params.imageSrc);
+  public async create(params: { url?: string; base64?: string; }): Promise<Lgtm> {
+    const src: Buffer = params.url ? (await axios.get(params.url, { responseType: 'arraybuffer' })).data : Buffer.from(params.base64, 'base64');
+
+    const lgtmBuf = await this.config.lgtmWriter.write(src);
     const lgtm: Lgtm = { id: uuid.v4(), status: 'pending', created_at: new Date().toISOString() };
 
     await this.config.dynamodbDocumentClient.put({ TableName: this.config.tableName, Item: lgtm }).promise();

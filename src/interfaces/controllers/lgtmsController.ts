@@ -30,7 +30,7 @@ export class LgtmsController implements ILgtmsController {
     const input = JSON.parse(event.body) as CreateInput;
     if (!input) return this.config.renderer.badRequest();
 
-    const lgtm = await this.config.lgtmsRepository.create({ imageSrc: input.url || Buffer.from(input.base64, 'base64') });
+    const lgtm = await this.config.lgtmsRepository.create(input);
     return this.config.renderer.created({ body: JSON.stringify(lgtm), contentType: 'application/json' });
   }
 
