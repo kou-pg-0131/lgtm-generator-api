@@ -1,7 +1,7 @@
 import { S3 } from 'aws-sdk';
 import { ILgtmsController, LgtmsController } from '.';
 import { DynamoDBDocumentClientFactory, LgtmsRepository, ILgtmsRepository } from '../gateways';
-import { LgtmWriter, S3FileStorage, Renderer } from '../../infrastructures';
+import { HttpClient, LgtmWriter, S3FileStorage, Renderer } from '../../infrastructures';
 
 export class LgtmsControllerFactory {
   public create(): ILgtmsController {
@@ -17,6 +17,7 @@ export class LgtmsControllerFactory {
       tableName: process.env.DYNAMODB_TABLE_LGTMS,
       lgtmWriter: new LgtmWriter(),
       dynamodbDocumentClient: new DynamoDBDocumentClientFactory().create(),
+      httpClient: new HttpClient(),
     });
   }
 }
