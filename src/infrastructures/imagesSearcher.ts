@@ -3,7 +3,7 @@ import { IHttpClient, IImagesSearcher } from '../interfaces/gateways';
 import { IUrlBuilder } from '.';
 
 interface ISearchResult {
-  items: {
+  items?: {
     title: string;
     link: string;
   }[];
@@ -34,6 +34,6 @@ export class ImagesSearcher implements IImagesSearcher {
     );
 
     const response = await this.config.httpClient.get<ISearchResult>(endpoint);
-    return response.items.map(item => ({ title: item.title, url: item.link }));
+    return response.items?.map(item => ({ title: item.title, url: item.link })) || [];
   }
 }
