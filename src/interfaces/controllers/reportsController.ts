@@ -22,7 +22,7 @@ export class ReportsController implements IReportsController {
     if (!Object.values(ReportType).includes(input.type)) return this.config.renderer.badRequest();
 
     const report = await this.config.reportsRepository.create({ type: input.type, text: input.text, lgtmId: input.lgtm_id });
-    return this.config.renderer.created({ body: JSON.stringify(report), contentType: 'application/json' });
+    return this.config.renderer.created(JSON.stringify(report));
   }
 }
 

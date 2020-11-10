@@ -1,12 +1,12 @@
 import { IRenderer, IResponse } from '../interfaces/controllers';
 
 export class Renderer implements IRenderer {
-  public ok(params: { body: string; }): IResponse {
-    return this.buildResponse(200, params.body);
+  public ok(body: string): IResponse {
+    return this.buildResponse(200, body);
   }
 
-  public created(params: { body: string; }): IResponse {
-    return this.buildResponse(201, params.body);
+  public created(body: string): IResponse {
+    return this.buildResponse(201, body);
   }
 
   public badRequest(): IResponse {

@@ -15,7 +15,7 @@ export class ImagesController implements IImagesController {
     if (!q) return this.config.renderer.badRequest();
 
     const images = await this.config.imagesRepository.search({ q });
-    return this.config.renderer.ok({ body: JSON.stringify(images), contentType: 'application/json' });
+    return this.config.renderer.ok(JSON.stringify(images));
   }
 }
 

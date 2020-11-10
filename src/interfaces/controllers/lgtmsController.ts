@@ -23,7 +23,7 @@ export class LgtmsController implements ILgtmsController {
 
   public async getAll(event: APIGatewayProxyEventV2): Promise<IResponse> {
     const { lgtms, evaluatedId } = await this.config.lgtmsRepository.getAll({ evaluatedId: event.queryStringParameters?.evaluated_id });
-    return this.config.renderer.ok({ body: JSON.stringify({ lgtms, evaluated_id: evaluatedId }), contentType: 'application/json' });
+    return this.config.renderer.ok(JSON.stringify({ lgtms, evaluated_id: evaluatedId }));
   }
 
   public async create(event: APIGatewayProxyEventV2): Promise<IResponse> {
@@ -31,7 +31,7 @@ export class LgtmsController implements ILgtmsController {
     if (!input) return this.config.renderer.badRequest();
 
     const lgtm = await this.config.lgtmsRepository.create(input);
-    return this.config.renderer.created({ body: JSON.stringify(lgtm), contentType: 'application/json' });
+    return this.config.renderer.created(JSON.stringify(lgtm));
   }
 
   public async delete(event?: DeleteInput): Promise<void> {

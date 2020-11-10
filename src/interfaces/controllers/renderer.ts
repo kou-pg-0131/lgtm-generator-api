@@ -1,7 +1,7 @@
 import { IResponse } from '.';
 
 export interface IRenderer {
-  ok(params: { body: string; contentType: string; }): IResponse;
-  created(params: { body: string; contentType: string; }): IResponse;
+  ok(body: string): IResponse;
+  created(body: string): IResponse;
   badRequest(): IResponse;
 }

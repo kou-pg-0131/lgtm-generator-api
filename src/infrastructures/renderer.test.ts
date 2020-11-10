@@ -4,7 +4,7 @@ describe('Renderer', () => {
   const renderer = new Renderer();
   describe('ok()', () => {
     it('should return 200 response', () => {
-      const response = renderer.ok({ body: 'BODY' });
+      const response = renderer.ok('BODY');
       expect(response).toEqual({
         statusCode: 200,
         body: 'BODY',
@@ -18,7 +18,7 @@ describe('Renderer', () => {
 
   describe('created()', () => {
     it('should return 201 response', () => {
-      const response = renderer.created({ body: 'BODY' });
+      const response = renderer.created('BODY');
       expect(response).toEqual({
         statusCode: 201,
         body: 'BODY',
