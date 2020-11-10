@@ -1,31 +1,32 @@
-import { IRenderer, IResponse, IHeaders } from '../interfaces/controllers';
+import { IRenderer, IResponse } from '../interfaces/controllers';
 
 export class Renderer implements IRenderer {
-  public ok(params: { body: string; contentType: string; }): IResponse {
-    return { statusCode: 200, body: params.body, headers: this.buildHeaders(params.contentType) };
+  public ok(params: { body: string; }): IResponse {
+    return this.buildResponse(200, params.body);
   }
 
-  public created(params: { body: string; contentType: string; }): IResponse {
-    return { statusCode: 201, body: params.body, headers: this.buildHeaders(params.contentType) };
+  public created(params: { body: string; }): IResponse {
+    return this.buildResponse(201, params.body);
   }
 
   public badRequest(): IResponse {
-    return { statusCode: 400, body: this.buildMessageBody('Bad Request'), headers: this.buildHeaders() };
+    return this.buildResponse(400, this.buildMessageBody('Bad Request'));
+  }
+
+  private buildResponse(statusCode: number, body: string): IResponse {
+    const accessControlAllowOrigin = process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*' ;
+
+    return {
+      statusCode,
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': accessControlAllowOrigin,
+      },
+    };
   }
 
   private buildMessageBody(message: string): string {
     return JSON.stringify({ message });
-  }
-
-  private buildHeaders(contentType?: string): IHeaders {
-    const accessControlAllowOrigin =
-      process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true' ?
-        '*' :
-        process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*' ;
-
-    return {
-      'Content-Type': contentType || 'application/json',
-      'Access-Control-Allow-Origin': accessControlAllowOrigin,
-    };
   }
 }
