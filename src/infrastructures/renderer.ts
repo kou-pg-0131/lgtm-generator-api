@@ -14,7 +14,10 @@ export class Renderer implements IRenderer {
   }
 
   private buildResponse(statusCode: number, body: string): IResponse {
-    const accessControlAllowOrigin = process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*' ;
+    const accessControlAllowOrigin =
+      process.env.IS_LOCAL === 'true' || process.env.IS_OFFLINE === 'true' ?
+        '*' :
+        process.env.ACCESS_CONTROL_ALLOW_ORIGIN || '*' ;
 
     return {
       statusCode,
