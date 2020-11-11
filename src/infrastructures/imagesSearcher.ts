@@ -29,7 +29,6 @@ export class ImagesSearcher implements IImagesSearcher {
         num: 10,
         searchType: 'image',
         safe: 'active',
-        fileType: 'jpeg',
       },
     );
 

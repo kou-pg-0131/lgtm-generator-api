@@ -16,7 +16,7 @@ describe('ImagesSearcher', () => {
       const images = await imagesSearcher.search({ q: 'QUERY' });
       expect(images).toEqual([{ title: 'TITLE', url: 'https://LINK' }]);
       expect(urlBuilder.build).toHaveBeenCalledWith('https://customsearch.googleapis.com/customsearch/v1', {
-        key: 'API_KEY', q: 'QUERY', cx: 'SEARCH_ENGINE_ID', num: 10, searchType: 'image', safe: 'active', fileType: 'jpeg',
+        key: 'API_KEY', q: 'QUERY', cx: 'SEARCH_ENGINE_ID', num: 10, searchType: 'image', safe: 'active',
       });
       expect(httpClient.get).toHaveBeenCalledWith('https://example.com');
     });
