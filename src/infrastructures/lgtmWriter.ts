@@ -2,8 +2,8 @@ import * as gm from 'gm';
 import { ILgtmWriter } from '../interfaces/gateways';
 
 export class LgtmWriter implements ILgtmWriter {
-  public async write(src: string | Buffer): Promise<Buffer> {
-    const image = gm.subClass({ imageMagick: true })(src as Buffer);
+  public async write(src: Buffer): Promise<Buffer> {
+    const image = gm.subClass({ imageMagick: true })(src);
 
     const maxSideLength = 400;
     const size = await this.calcImageSize(image, maxSideLength);
