@@ -28,9 +28,7 @@ custom:
       lgtms: ${self:custom.prefix}-lgtms
       reports: ${self:custom.prefix}-reports
     s3Bucket:
-      lgtms:
-        dev: ${self:custom.prefix}-lgtms
-        prod: ${self:custom.product}-lgtms
+      lgtms: ${self:custom.prefix}-lgtms
 
 plugins:
   - serverless-webpack
@@ -63,7 +61,7 @@ provider:
         Fn::Join:
           - ""
           - - "arn:aws:s3:::"
-            - ${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}
+            - ${self:custom.variables.s3Bucket.lgtms}
             - /*
   logs:
     restApi:
@@ -76,7 +74,7 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     GOOGLE_API_KEY: ${file(./secrets.yml):googleApiKey}
     GOOGLE_CUSTOM_SEARCH_ENGINE_ID: ${file(./secrets.yml):googleCustomSearchEngineId}
-    S3_BUCKET_LGTMS: ${self:custom.variables.s3Bucket.lgtms.${self:provider.stage}}
+    S3_BUCKET_LGTMS: ${self:custom.variables.s3Bucket.lgtms}
     DYNAMODB_TABLE_LGTMS: ${self:custom.variables.dynamodbTable.lgtms}
     DYNAMODB_TABLE_REPORTS: ${self:custom.variables.dynamodbTable.reports}
     ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.variables.accessControlAllowOrigin.${self:provider.stage}}
