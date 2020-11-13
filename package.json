@@ -1,8 +1,6 @@
 {
   "name": "lgtm-generator-api",
-  "version": "1.0.0",
-  "description": "Serverless webpack example using Typescript",
-  "main": "handler.js",
+  "license": "MIT",
   "scripts": {
     "deploy": "sls deploy --verbose",
     "remove": "sls remove --verbose",
@@ -48,7 +46,5 @@
     "typescript": "^3.2.4",
     "webpack": "^4.29.0",
     "webpack-node-externals": "^1.7.2"
-  },
-  "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
-  "license": "MIT"
+  }
 }
