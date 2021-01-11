@@ -4,7 +4,7 @@
   "scripts": {
     "deploy": "sls deploy --verbose",
     "remove": "sls remove --verbose",
-    "test": "jest --runInBand --silent",
+    "test": "jest --runInBand --silent --collect-coverage",
     "lint": "eslint '**/*.js' '**/*.ts'"
   },
   "jest": {
