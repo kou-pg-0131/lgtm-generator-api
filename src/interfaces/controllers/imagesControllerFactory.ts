@@ -1,6 +1,6 @@
 import { IImagesController, ImagesController } from '.';
 import { ImagesRepository, IImagesRepository } from '../gateways';
-import { ImagesSearcher, HttpClient, Renderer, UrlBuilder } from '../../infrastructures';
+import { ImagesSearcher, Renderer } from '../../infrastructures';
 
 export class ImagesControllerFactory {
   public create(): IImagesController {
@@ -12,12 +12,10 @@ export class ImagesControllerFactory {
 
   private createImagesRepository(): IImagesRepository {
     return new ImagesRepository({
-      imagesSearcher:  new ImagesSearcher({
-        apiKey: process.env.GOOGLE_API_KEY,
-        searchEngineId: process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
-        httpClient: new HttpClient(),
-        urlBuilder: new UrlBuilder(),
-      }),
+      imagesSearcher:  new ImagesSearcher(
+        process.env.GOOGLE_API_KEY,
+        process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
+      ),
     });
   }
 }

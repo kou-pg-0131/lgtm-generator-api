@@ -6,12 +6,12 @@ describe('ImagesSearcher', () => {
     it('should call httpClient.get() with correct args', async () => {
       const urlBuilder: IUrlBuilder = { build: jest.fn().mockReturnValue('https://example.com'), join: jest.fn() };
       const httpClient: IHttpClient = { get: jest.fn().mockResolvedValue({ items:[{ title: 'TITLE', link: 'https://LINK' }] }) };
-      const imagesSearcher = new ImagesSearcher({
-        apiKey: 'API_KEY',
-        searchEngineId: 'SEARCH_ENGINE_ID',
+      const imagesSearcher = new ImagesSearcher(
+        'API_KEY',
+        'SEARCH_ENGINE_ID',
         urlBuilder,
         httpClient,
-      });
+      );
 
       const images = await imagesSearcher.search({ q: 'QUERY' });
       expect(images).toEqual([{ title: 'TITLE', url: 'https://LINK' }]);
