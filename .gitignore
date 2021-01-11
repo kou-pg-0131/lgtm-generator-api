@@ -39,3 +39,6 @@ terraform.tfvars
 !/tmp/lgtms
 /tmp/lgtms/*
 !/tmp/lgtms/.keep
+
+# jest
+/coverage
