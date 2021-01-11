@@ -1,4 +1,4 @@
-resource aws_s3_bucket lgtms {
+resource "aws_s3_bucket" "lgtms" {
   bucket        = "${local.prefix}-lgtms"
   acl           = "private"
   force_destroy = var.stage != "prod"
@@ -18,7 +18,7 @@ resource aws_s3_bucket lgtms {
   tags = { Name = "${local.prefix}-lgtms" }
 }
 
-resource aws_s3_bucket_policy lgtms {
+resource "aws_s3_bucket_policy" "lgtms" {
   bucket = aws_s3_bucket.lgtms.id
   policy = jsonencode({
     Version = "2012-10-17"

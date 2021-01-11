@@ -1,7 +1,7 @@
-variable stage {
+variable "stage" {
   type = string
 }
-variable ip_whitelist {
+variable "ip_whitelist" {
   type = list(string)
 }
 

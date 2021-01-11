@@ -1,4 +1,4 @@
-resource aws_cloudfront_distribution lgtms {
+resource "aws_cloudfront_distribution" "lgtms" {
   enabled             = true
   default_root_object = "index.html"
 
@@ -48,4 +48,4 @@ resource aws_cloudfront_distribution lgtms {
   }
 }
 
-resource aws_cloudfront_origin_access_identity lgtms {}
+resource "aws_cloudfront_origin_access_identity" "lgtms" {}
